@@ -19,7 +19,7 @@ We have seen how many newcomers to approaching their fitness journey can be over
 # Team Member List:
 Ava Sokolosky
 Role:
-Issues:
+Issues: Exercise Suggestions and Form Videos Page
 
 Shruti Janardhanan
 Role:
