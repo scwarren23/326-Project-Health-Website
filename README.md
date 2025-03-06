@@ -16,7 +16,7 @@ Workout suggestions and demonstrations targeted towards muscle groups, calorie d
 # Why this project?: 
 We have seen how many newcomers to approaching their fitness journey can be overwhelmed by the amount of information and trends out there, so we want to provide a good starting point for tackling workouts, nutrition, and overall maintaining a healthy lifestyle. 
 
-
+# Team Member List:
 Ava Sokolosky
 Role:
 Issues:
