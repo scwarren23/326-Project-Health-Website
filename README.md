@@ -23,7 +23,7 @@ Issues:
 
 Shruti Janardhanan
 Role:
-Issues:
+Issues: Calorie calculator UI design, workout tracker UI design
 
 Samuel Warren
 Role:
