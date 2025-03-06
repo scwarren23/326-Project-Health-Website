@@ -19,7 +19,7 @@ We have seen how many newcomers to approaching their fitness journey can be over
 # Team Member List:
 Ava Sokolosky
 Role: Meeting Coordinator
-Issues: Exercise Suggestions and Form Videos Page
+Issues: Exercise Suggestions and Form Videos Page (UI Design), User Profile Data Structure (Data Design)
 
 Shruti Janardhanan
 Role:
