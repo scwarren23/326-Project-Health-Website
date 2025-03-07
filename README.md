@@ -26,8 +26,8 @@ Role:
 Issues: Calorie calculator UI design, workout tracker UI design
 
 Samuel Warren
-Role:
-Issues:
+Role: Feedback monitor. Making sure everyones ideas are heard/ incoporated fairly.
+Issues: Food Database Via API (Data Design) UI of food input, other UI visuals
 
 James Rust
 Role:
