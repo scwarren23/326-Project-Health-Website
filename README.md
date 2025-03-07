@@ -8,7 +8,7 @@
 
 
 # Problem: 
-There’s lots of apps out there that do separate things related to fitness, such as track nutrition, recommend workouts, demonstrate exercises, etc. which can get confusing, especially for people trying to get into fitness.
+There’s lots of apps out there that do separate things related to fitness, such as track nutrition, recommend workouts, demonstrate exercises, etc. which can get confusing, especially for people trying to get into fitness. This overflow of information can make getting into fitness, or just trying to stick to a routine, difficult.
 # Solution: 
 Consolidating physical and nutritional information to one website for people looking to stay healthy.
 # Key Features:
