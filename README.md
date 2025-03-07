@@ -30,5 +30,5 @@ Role: Feedback monitor. Making sure everyones ideas are heard/ incoporated fairl
 Issues: Food Database Via API (Data Design) UI of food input, other UI visuals
 
 James Rust
-Role:
+Role: Project Manager. Ensure project stays on track, features are implemented on time, etc.
 Issues:
