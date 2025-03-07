@@ -31,4 +31,4 @@ Issues: Food Database Via API (Data Design) UI of food input, other UI visuals
 
 James Rust
 Role: Project Manager. Ensure project stays on track, features are implemented on time, etc.
-Issues:
+Issues: Workout Tracker Input (Data Design), UI of Nutritional Advice Screen (UI Design), Project Manager (Team Design)
