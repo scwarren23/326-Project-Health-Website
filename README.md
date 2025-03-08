@@ -22,7 +22,7 @@ Role: Meeting Coordinator
 Issues: Exercise Suggestions and Form Videos Page (UI Design), User Profile Data Structure (Data Design), Exercise Suggestion Data Structure (Data Design)
 
 Shruti Janardhanan
-Role:
+Role: Repository maintainer
 Issues: Calorie calculator UI design, workout tracker UI design
 
 Samuel Warren
