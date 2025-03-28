@@ -26,7 +26,7 @@ Role: Repository maintainer
 Issues: Calorie calculator UI design, workout tracker UI design
 
 Samuel Warren
-Role: Feedback monitor. Making sure everyones ideas are heard/ incoporated fairly.
+Role: Feedback monitor. Making sure everyone's ideas are heard/ incorporated fairly.
 Issues: Food Database Via API (Data Design) UI of food input, other UI visuals
 
 James Rust
