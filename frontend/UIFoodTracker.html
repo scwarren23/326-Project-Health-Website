@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script></script> -->
+    <link rel="stylesheet" href="UIFoodTracker.css">
+    <title>Food Tracker</title>
+</head>
+<body>
+    
+    <div class="search">
+        <h1>Food Tracker</h1>
+        <div class="searchbar">
+        <input type="text" id="foodInput" placeholder="Enter food or brand name">
+        <button onclick="searchFood()">Search</button>
+        <br>
+        <br>
+        <input type="text" id="amountInput" placeholder="Enter amount in grams">
+        <button onclick="amountFood()">Amount</button>
+        
+        <pre id="results"></pre> <!-- For displaying results, later implemented -->
+    </div>
+    </div>
+    <div class="food-list">
+        <h1>Foods consumed</h1>
+        <div class="food-items">
+            <P> </P>
+            <ul id="foodItems">
+                <li>
+                    Food list to be added with js
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+    <div class="nutrients">
+        <h1>Macronutrients</h1>
+        <div class="trackers">
+        <h4>Nutrient, and Percentage of recommended daily amount</h3>
+        <div class="protein-tracker">
+            <label for="progress">Protein:</label>
+            <progress id="protein" value="50" max="100"></progress>
+            <span id="protein-value">X %</span>
+        </div>
+        <div class="fat-tracker">
+            <label for="progress">Total Fat:</label>
+            <progress id="total-fat" value="50" max="100"></progress>
+            <span id="total-fat-value">X %</span>
+        </div>
+        <div class="carb-tracker">
+            <label for="progress">Carbohydrates:</label>
+            <progress id="carbohydrates" value="50" max="100"></progress>
+            <span id="carbohydrates-value">X %</span>
+        </div>
+        <div class="sugar-tracker">
+            <label for="progress">Sugar:</label>
+            <progress id="sugar" value="50" max="100"></progress>
+            <span id="sugar-value">X %</span>
+        </div>
+        <div class="fiber-tracker">
+            <label for="progress">Fiber:</label>
+            <progress id="fiber" value="50" max="100"></progress>
+            <span id="fiber-value">X %</span>
+        </div>
+        <div class="calcium-tracker">
+            <label for="progress">Calcium:</label>
+            <progress id="calcium" value="50" max="100"></progress>
+            <span id="calcium-value">X %</span>
+        </div>
+        <div class="iron-tracker">
+            <label for="progress">Iron:</label>
+            <progress id="iron" value="50" max="100"></progress>
+            <span id="iron-value">X %</span>
+        </div>
+        <div class="sodium-tracker">
+            <label for="progress">Sodium:</label>
+            <progress id="sodium" value="50" max="100"></progress>
+            <span id="sodium-value">X %</span>
+        </div>
+        <div class="vitA-tracker">
+            <label for="progress">Vitamin A:</label>
+            <progress id="vitA" value="50" max="100"></progress>
+            <span id="vitA-value">X %</span>
+        </div>
+        <div class="vitC-tracker">
+            <label for="progress">Vitamin C:</label>
+            <progress id="vitC" value="50" max="100"></progress>
+            <span id="vitC-value">X %</span>
+        </div>
+        <div class="cholesterol-tracker">
+            <label for="progress">Cholesterol:</label>
+            <progress id="cholesterol" value="50" max="100"></progress>
+            <span id="cholesterol-value">X %</span>
+        </div>
+        </div>
+        <!-- <div class="sugar-tracker">
+            <label for="progress">Sugar:</label>
+            <progress id="sugar" value="50" max="100"></progress>
+        </div> -->
+    </div>
+    
+</body>
+</html>
