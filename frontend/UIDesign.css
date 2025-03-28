@@ -58,3 +58,11 @@
     display: none;
 }
 
+.footer {
+    text-align: center;
+    padding: 3px;
+    background-color: rgb(255, 82, 82);
+    padding: 20px;
+    border: 2px solid #000;
+    margin-top: 10px;
+}
