@@ -19,10 +19,6 @@ document.addEventListener("DOMContentLoaded", () => { //same as in-class exercis
       .addEventListener("click", () => navigate("food-tracker"));
       
     document
-      .getElementById("calorie")
-      .addEventListener("click", () => navigate("calorie-calculator"));
-      
-    document
       .getElementById("work")
       .addEventListener("click", () => navigate("workouts"));
       
