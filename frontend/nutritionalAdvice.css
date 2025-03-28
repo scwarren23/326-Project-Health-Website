@@ -48,7 +48,8 @@ select {
 }
 
 #reccomendations-dashboard p {
-    font-size: 14px;
+    font-weight: bold;
+    font-size: 16px;
     margin: 5px 0;
 }
 
