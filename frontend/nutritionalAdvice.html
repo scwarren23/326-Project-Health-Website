@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="nutritionalAdvice.css">
+        <script src="app.js"></script>
+        <title>CSS Grid Dashboard Layout</title>
+    </head>
+    <body>
+        <div class="dashboard">
+            
+            <div id="baseline-dropdown">
+                <label for="activity">How would you measure your activity level?</label>
+                <select name="baseline-activity" id="activity">
+                    <option value="low">Low: Spend most of your days sitting</option>
+                    <option value="medium">Medium: Spend most of your days lightly active</option>
+                    <option value="high">High: Spend a good part of your days doing some physical activity</option>
+                  </select>
+            </div>
+
+            <label for="gender-inpt">Gender:</label>
+            <select name="gender" id="gender-inpt">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+
+            <label for="age-inpt">Age:</label>
+            <input type="number" min="1" id="age-inpt">
+
+            <label for="height-inpt">Height (in):</label>
+            <input type="number" min="1" id="height-inpt">
+
+            <label for="weight-inpt">Weight:</label>
+            <input type="number" min="1" id="weight-inpt">
+
+            <label for="goal-weight-inpt">Goal Weight:</label>
+            <input type="number" min="1" id="goal-weight-inpt">
+
+            <!-- This information below will be populated by calculated values from a javascript function
+             and dynamically updated by changing the innerHTML, for Milestone 4 they will remain blank-->
+            <div id="reccomendations-dashboard">
+                <p>Based on your goal weight of __:</p>
+                <p>Total Calories: __</p>
+                <p>__ grams of protein</p>
+                <p>__ grams of fats</p>
+                <p>__ grams of carbs</p>
+            </div>
+        </div>
+    </body>
+</html>
