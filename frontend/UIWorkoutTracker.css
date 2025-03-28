@@ -53,7 +53,16 @@ label {
     font-weight: bold;
     
 }
-input, select {
+input {
+    width: 100%;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 8%;
+}
+
+select {
     width: 100%;
     padding: 5px;
     font-size: 14px;
@@ -64,4 +73,14 @@ input, select {
 ul li {
     margin-bottom: 10px;
     padding: 10px;
+}
+button {
+    background-color: #fff;
+    color: #000000;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
 }
