@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="ExerciseSuggestionsPage.css">
+    <script src="ExerciseSuggestionsPage.js"></script>
+    <script src="app.js"></script>
+
+    <title>Exercise Suggestions Page</title>
+  </head>
+  <div class="header">
+    <h1 style="font-size: xx-large;">Health Hub</h1>
+</div>
+  <body><div class="main-content">
+    <div class="sidebar">
+        <h2 style="font-size: xx-large;">Features</h2>
+        <p style="font-size: larger;">
+            <span class="clickable" id="main">Main Page</span><br>
+            <span class="clickable" id="food">Food Tracker</span><br>
+            <span class="clickable" id="calorie">Calorie Calculator</span><br>
+            <span class="clickable" id="work">Workouts</span><br>
+            <span class="clickable" id="nutrition">Nutritional Advice</span>
+        </p>
+    </div>
+    <div class="container">
+        <h1>Workout Suggestions</h1>
+        <div class="search-filter">
+            <input type="text" id="searchInput" placeholder="Search exercises...">
+            <select id="filterSelect">
+              <option value="all">All Exercises</option>
+              <option value="legs">Legs</option>
+              <option value="arms">Arms</option>
+              <option value="core">Core</option>
+              <option value="plyometrics">Plyometrics</option>
+            </select>
+          </div>
+    
+        <div class="exercise-grid" id="exerciseGrid">
+            <div class="exercise-card" data-category="legs">
+                <h2>Barbell Back Squat</h2>
+                <div class="tags">
+                  <span class="tag target">Legs</span>
+                  <span class="tag medium">Medium</span>
+                  <span class="tag goal">Strength</span>
+                </div>
+                <button>View</button>
+              </div>
+              <div class="exercise-card" data-category="arms">
+                <h2>Dumbbell Bicep Curl</h2>
+                <div class="tags">
+                  <span class="tag target">Arms</span>
+                  <span class="tag easy">Easy</span>
+                  <span class="tag goal">Hypertrophy</span>
+                </div>
+                
+                <button>View</button>
+            </div>
+            
+    </div>
+</div>
+
+    
+</body>
+</html>

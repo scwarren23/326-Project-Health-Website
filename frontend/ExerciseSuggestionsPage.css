@@ -1,0 +1,152 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr minmax(300px, 1200px) 1fr; /* This allows flexibility for large screens */
+    grid-template-rows: auto 1fr; /* Auto adjust for header and footer */
+    gap: 20px;
+}
+
+/* Header */
+.header {
+    grid-column: 1 / -1; /* Span across all columns */
+    background: rgb(255, 82, 82);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    flex-direction: column;
+
+}
+
+/* Sidebar */
+.sidebar {
+    grid-row: 2;
+    grid-column: 1;
+    background: pink;
+    padding: 20px;
+    border-radius: 8px;
+    margin-right: 20px;
+    width: 150px;
+    position: relative;
+    flex-shrink: 0;
+    left: 0;
+}
+
+/* Main content area */
+.main-content {
+    grid-column: 2; /* This will place it in the center column */
+    grid-row: 2 / 3;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+/* Container (adjust layout for flexible resizing) */
+.container {
+    flex-grow: 2;
+    background: rgb(205, 224, 231);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Adjust to fill the available space */
+
+}
+
+/* Grid for exercises */
+.exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 50px;
+    width:100%;
+    
+}
+
+.exercise-card {
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    min-width: 300px;
+}
+.search-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-filter input,
+.search-filter select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+/* Buttons */
+button {
+    background: rgb(205, 224, 231);
+    color: black;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.clickable:hover {
+    background-color: rgb(255, 221, 227);
+    cursor: pointer;
+}
+
+.tags {
+    display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.tag {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    border-radius: 16px;
+}
+
+.target {
+    background-color: #3498db; /* Blue */
+}
+
+.easy {
+    background-color: #2ecc71; /* Green */
+}
+
+.medium{
+    background-color: grey;
+}
+
+.hard{
+    background-color: red;
+}
+
+.goal{
+    background-color: rgb(224, 149, 224);
+}
+
+.hidden {
+    display: none;
+}
