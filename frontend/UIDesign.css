@@ -59,6 +59,8 @@
 }
 
 .footer {
+    grid-column: 1/3;
+    grid-row: 4;
     text-align: center;
     padding: 3px;
     background-color: rgb(255, 82, 82);
