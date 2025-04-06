@@ -12,11 +12,11 @@
     <div class="search">
         <h1>Food Tracker</h1>
         <div class="searchbar">
-        <input type="text" id="foodInput" placeholder="Enter food or brand name">
+        <input type="text" id="foodInput" placeholder="Enter food or brand name" style="background-color: rgb(231, 231, 231);">
         <button onclick="searchFood()">Search</button>
         <br>
         <br>
-        <input type="text" id="amountInput" placeholder="Enter amount in grams">
+        <input type="text" id="amountInput" placeholder="Enter amount in grams" style="background-color: rgb(231, 231, 231);">
         <button onclick="amountFood()">Amount</button>
         
         <pre id="results"></pre> <!-- For displaying results, later implemented -->
@@ -27,9 +27,15 @@
         <div class="food-items">
             <P> </P>
             <ul id="foodItems">
+                <br>
                 <li>
                     Food list to be added with js
                 </li>
+                <br>
+                <li>
+                    item 2
+                </li>
+                <br>
             </ul>
         </div>
         
@@ -39,7 +45,7 @@
         <div class="trackers">
         <h4>Nutrient, and Percentage of recommended daily amount</h3>
         <div class="calories-tracker">
-            <label for="progress">Cholesterol:</label>
+            <label for="progress">Calories:</label>
             <progress id="calories" value="50" max="100"></progress>
             <span id="calories-value">X %</span>
         </div>    
