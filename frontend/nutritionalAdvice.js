@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Implement functions to calculate recommended calorie totals, macros, etc 
-    // based on the information input by the user
     const form = document.getElementById("nutritional-form");
     const goalWeightInput = document.getElementById("goal-weight-inpt");
     const curWeightInput = document.getElementById("weight-inpt");
@@ -27,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         heightInput.value = savedInputs.height;
         genderInput.value = savedInputs.gender;
         activityLevelInput.value = savedInputs.activityLevel;
-    }
+    };
 
     form.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -105,7 +103,16 @@ document.addEventListener("DOMContentLoaded", function () {
             activityMultiplier = 1.9;
         }
 
-        let totalCalories = Math.round(BMR * activityMultiplier);
+        let goalTDEE = BMR * activityMultiplier;
+
+        let totalCalories;
+        if (goalWeight < weight) {
+            totalCalories = Math.round(goalTDEE - 500);
+        } else if (goalWeight > weight) {
+            totalCalories = Math.round(goalTDEE + 300);
+        } else {
+            totalCalories = Math.round(goalTDEE);
+        }
 
         let proteinGrams = Math.round(goalWeight * 1.2);
         let fatGrams = Math.round(totalCalories * 0.25 / 9);
