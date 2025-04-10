@@ -1,27 +1,32 @@
-function filterExercises() {
-    const searchText = document.getElementById("searchInput").value.toLowerCase();
-    const filterCategory = document.getElementById("filterSelect").value;
-    const exercises = document.querySelectorAll(".exercise-card");
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("searchInput");
+    const filterSelect = document.getElementById("filterSelect");
 
-    exercises.forEach(exercise => {
-        const name = exercise.querySelector("h2").textContent.toLowerCase();
-        const category = exercise.getAttribute("data-category");
+    function filterExercises() {
+        let searchQuery = searchInput.value.toLowerCase();
+        let selectedCategory = filterSelect.value;
+        let cards = document.querySelectorAll(".exercise-card");
 
-        // Check if the exercise matches the search text and category
-        const matchesSearch = name.includes(searchText);
-        const matchesCategory = filterCategory === "all" || category === filterCategory;
-
-        if (matchesSearch && matchesCategory) {
-            exercise.classList.remove("hidden");
-        } else {
-            exercise.classList.add("hidden");
+        if (!cards.length) {
+            console.error("No exercise cards found!");
+            return;
         }
-    });
-}
 
-// Add event listeners for search input and filter dropdown
-document.getElementById("searchInput").addEventListener("input", filterExercises);
-document.getElementById("filterSelect").addEventListener("change", filterExercises);
+        cards.forEach(card => {
+            let title = card.querySelector("h2")?.textContent.toLowerCase() || "";
+            let tags = card.querySelector(".tags")?.textContent.toLowerCase() || "";
+            let category = card.getAttribute("data-category");
 
-// Call the filter function initially to display all exercises
-filterExercises();
+            //checks if search query is in title or tags
+            let matchesSearch = title.includes(searchQuery) || tags.includes(searchQuery);
+            //checks if the category matches the filter or "all" is selected
+            let matchesFilter = selectedCategory === "all" || category === selectedCategory;
+
+            //show the card if it matches BOTH the search and filter
+            card.style.display = matchesSearch && matchesFilter ? "block" : "none";
+        });
+    }
+
+    searchInput.addEventListener("keyup", filterExercises);
+    filterSelect.addEventListener("change", filterExercises);
+});
