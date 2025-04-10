@@ -10,6 +10,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const heightInput = document.getElementById("height-inpt");
     const recommendationsDashboard = document.getElementById("reccomendations-dashboard");
 
+    const errors = {
+        age: document.getElementById("age-error"),
+        height: document.getElementById("height-error"),
+        weight: document.getElementById("weight-error"),
+        goal: document.getElementById("goal-error"),
+        gender: document.getElementById("gender-error"),
+        activity: document.getElementById("activity-error")
+    };
+    
     const savedInputs = JSON.parse(localStorage.getItem("userInputs"));
     if (savedInputs) {
         goalWeightInput.value = savedInputs.goalWeight;
@@ -23,12 +32,47 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", function (event) {
         event.preventDefault();
 
+        Object.values(errors).forEach(el => el.textContent = "");
+
         const goalWeight = goalWeightInput.value;
         const age = ageInput.value;
         const height = heightInput.value;
         const weight = curWeightInput.value;
         const gender = genderInput.value;
         const activityLevel = activityLevelInput.value;
+
+        let hasError = false;
+
+        if (!age || age <= 0) {
+            errors.age.textContent = "Please enter a valid age.";
+            hasError = true;
+        }
+        if (!height || height <= 0) {
+            errors.height.textContent = "Please enter a valid height (in inches).";
+            hasError = true;
+        }
+        if (!weight || weight <= 0) {
+            errors.weight.textContent = "Please enter a valid weight.";
+            hasError = true;
+        }
+        if (!goalWeight || goalWeight <= 0) {
+            errors.goal.textContent = "Please enter a valid goal weight.";
+            hasError = true;
+        }
+        if (!gender) {
+            errors.gender.textContent = "Please select your gender.";
+            hasError = true;
+        }
+
+        if (!activityLevel) {
+            errors.activity.textContent = "Please select your activity level.";
+            hasError = true;
+        }
+
+        if (hasError) {
+            recommendationsDashboard.innerHTML = `<p>Please fix the errors above to see recommendations.</p>`;
+            return;
+        }
 
         const userInputs = {
             goalWeight,
@@ -75,6 +119,24 @@ document.addEventListener("DOMContentLoaded", function () {
             <p>${carbGrams} grams of carbs per day</p>
         `;
     });
+
+    const resetBtn = document.getElementById("reset-btn");
+
+    resetBtn.addEventListener("click", function () {
+        form.reset();
+
+        localStorage.removeItem("userInputs");
+
+        Object.values(errors).forEach(el => el.textContent = "");
+
+        recommendationsDashboard.innerHTML = `
+            <p>Based on your goal weight of ${goalWeight} lbs:</p>
+            <p>Total Daily Calories: ${totalCalories}</p>
+            <p>${proteinGrams} grams of protein per day</p>
+            <p>${fatGrams} grams of fats per day</p>
+            <p>${carbGrams} grams of carbs per day</p>
+        `;
+    })
 });
 
 
