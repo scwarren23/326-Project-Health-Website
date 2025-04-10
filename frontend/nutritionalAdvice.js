@@ -10,6 +10,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const heightInput = document.getElementById("height-inpt");
     const recommendationsDashboard = document.getElementById("reccomendations-dashboard");
 
+    const savedInputs = JSON.parse(localStorage.getItem("userInputs"));
+    if (savedInputs) {
+        goalWeightInput.value = savedInputs.goalWeight;
+        curWeightInput.value = savedInputs.weight;
+        ageInput.value = savedInputs.age;
+        heightInput.value = savedInputs.height;
+        genderInput.value = savedInputs.gender;
+        activityLevelInput.value = savedInputs.activityLevel;
+    }
+
     form.addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -19,6 +29,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const weight = curWeightInput.value;
         const gender = genderInput.value;
         const activityLevel = activityLevelInput.value;
+
+        const userInputs = {
+            goalWeight,
+            weight,
+            age,
+            height,
+            gender,
+            activityLevel
+        };
+        localStorage.setItem("userInputs", JSON.stringify(userInputs));
 
         if (!goalWeight || !age || !height || !weight) {
             recommendationsDashboard.innerHTML = `<p>Fill in all fields to get recommendations.</p>`;
