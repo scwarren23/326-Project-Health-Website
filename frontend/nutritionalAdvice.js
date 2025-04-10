@@ -49,10 +49,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         recommendationsDashboard.innerHTML = `
             <p>Based on your goal weight of ${goalWeight} lbs:</p>
-            <p>Total Calories: ${totalCalories}</p>
-            <p>${proteinGrams} grams of protein</p>
-            <p>${fatGrams} grams of fats</p>
-            <p>${carbGrams} grams of carbs</p>
+            <p>Total Daily Calories: ${totalCalories}</p>
+            <p>${proteinGrams} grams of protein per day</p>
+            <p>${fatGrams} grams of fats per day</p>
+            <p>${carbGrams} grams of carbs per day</p>
         `;
     });
 });
