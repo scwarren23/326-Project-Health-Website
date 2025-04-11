@@ -1,57 +1,24 @@
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: 1fr minmax(300px, 1200px) 1fr; /* This allows flexibility for large screens */
-    grid-template-rows: auto 1fr; /* Auto adjust for header and footer */
+    grid-template-columns: 1fr minmax(300px, 1200px) 1fr; 
+    grid-template-rows: auto 1fr;
     gap: 20px;
 }
 
-/* Header */
-.header {
-    grid-column: 1 / -1; /* Span across all columns */
-    background: rgb(255, 82, 82);
-    color: white;
-    padding: 20px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
-    flex-direction: column;
 
-}
-
-/* Sidebar */
-.sidebar {
-    grid-row: 2;
-    grid-column: 1;
-    background: pink;
-    padding: 20px;
-    border-radius: 8px;
-    margin-right: 20px;
-    width: 150px;
-    position: relative;
-    flex-shrink: 0;
-    left: 0;
-}
-
-/* Main content area */
 .main-content {
-    grid-column: 2; /* This will place it in the center column */
-    grid-row: 2 / 3;
+    grid-column: 2; 
+    grid-row: 1 / 3;
+
     padding: 20px;
     display: flex;
     flex-direction: row;
 }
 
-/* Container (adjust layout for flexible resizing) */
 .container {
     flex-grow: 2;
     background: rgb(205, 224, 231);
@@ -60,11 +27,12 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    width: 100%; /* Adjust to fill the available space */
+    width: 100%; 
 
 }
 
-/* Grid for exercises */
+
+
 .exercise-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -82,7 +50,8 @@ body {
     width: 100%;
     box-sizing: border-box;
     flex-wrap: wrap;
-    min-width: 300px;
+    min-width: 270px;
+
 }
 .search-filter {
     display: flex;
@@ -97,7 +66,7 @@ body {
     border-radius: 5px;
 }
 
-/* Buttons */
+
 button {
     background: rgb(205, 224, 231);
     color: black;
@@ -106,9 +75,11 @@ button {
     cursor: pointer;
 }
 
-.clickable:hover {
-    background-color: rgb(255, 221, 227);
-    cursor: pointer;
+
+button:hover{
+    background-color: rgb(32, 32, 239);
+    color: white;
+
 }
 
 .tags {
@@ -128,11 +99,13 @@ button {
 }
 
 .target {
-    background-color: #3498db; /* Blue */
+
+    background-color: #3498db; 
 }
 
 .easy {
-    background-color: #2ecc71; /* Green */
+    background-color: #2ecc71; 
+
 }
 
 .medium{
