@@ -91,6 +91,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function validateForm(activity, duration, distance, rpe) {
+        if (isNaN(duration) || duration <= 0) {
+            alert("Duration must be greater than 0");
+            return false;
+        }
+        if (isNaN(distance) || distance < 0) {
+            alert("Distance must be greater than or equal to 0");
+            return false;
+        }
+        if (isNaN(rpe) || rpe < 0 || rpe > 10) {
+            alert("RPE must be between 0 and 10");
+            return false;
+        }
+        return true;
+    }
+
     //if (workoutHistory.children.length === 1 && workoutHistory.children[0].innerText.includes("_")) {
     //    workoutHistory.innerHTML = "";
     //}
@@ -109,6 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isNaN(date.getTime())) {
             console.error('Invalid Date object!');
             return;  
+        }
+
+        if (!validateForm(activity, duration, distance, rpe)) {
+            return;
         }
 
         if (duration === ""|| rpe === "") {
