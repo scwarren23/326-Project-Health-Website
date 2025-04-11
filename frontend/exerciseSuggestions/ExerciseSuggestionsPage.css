@@ -1,4 +1,3 @@
-
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -14,11 +13,11 @@ body {
 .main-content {
     grid-column: 2; 
     grid-row: 1 / 3;
+
     padding: 20px;
     display: flex;
     flex-direction: row;
 }
-
 
 .container {
     flex-grow: 2;
@@ -32,6 +31,7 @@ body {
     width: 100%; 
 
 }
+
 
 
 .exercise-grid {
@@ -92,9 +92,11 @@ button {
     cursor: pointer;
 }
 
+
 button:hover{
     background-color: rgb(32, 32, 239);
     color: white;
+
 }
 
 .tags {
@@ -114,11 +116,13 @@ button:hover{
 }
 
 .target {
+
     background-color: #3498db; 
 }
 
 .easy {
     background-color: #2ecc71; 
+
 }
 
 .medium{

@@ -89,3 +89,10 @@ h2 {
     background-color: #aaa;
     cursor: not-allowed;
 }
+
+.error {
+    color: red;
+    font-size: 0.85em;
+    display: block;
+    margin-bottom: 0.5em;
+}

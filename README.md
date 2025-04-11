@@ -34,3 +34,5 @@ Role: Project Manager. Ensure project stays on track, features are implemented o
 Issues: Workout Tracker Input (Data Design), UI of Nutritional Advice Screen (UI Design), Account Information Screen (UI), miscellaneous UI tweaks, Project Manager (Team Design)
 
 Milestone 4 Slides: https://docs.google.com/presentation/d/1gCKduxF-XtHZhiRvhfZnVI6gC5S0jNqvoOFVrhlnRac/edit?usp=sharing
+
+Milestone 5 Slides: https://docs.google.com/presentation/d/1TyoXCQ8AGaWW1ol2KnuGPWmc-vETQgGONoxyp-ps22w/edit?usp=sharing
