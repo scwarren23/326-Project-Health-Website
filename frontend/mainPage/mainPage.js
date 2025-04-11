@@ -1,3 +1,6 @@
+import { EventHub } from "../eventhub/EventHub.js";
+import { Events } from "../eventhub/Events.js";
+
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector(".account-form");
 
@@ -118,6 +121,8 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
+
+        EventHub.getInstance().publish(Events.StoreProfile, accountInfo);
 
         [nameInput, emailInput, heightInput, weightInput, goalWeightInput, dobInput].forEach(input => input.readOnly = true);
         [genderInput, activityLevelInput].forEach(select => select.disabled = true);

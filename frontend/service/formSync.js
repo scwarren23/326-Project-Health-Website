@@ -1,63 +1,61 @@
-import UserProfileService from './UserProfileService.js';
-import UserProfileRepository from './UserProfileRepository.js';
+import { EventHub } from "../eventhub/EventHub.js";
+import { Events } from "../eventhub/Events.js";
 
-const repo = new UserProfileRepository(new UserProfileService());
+const hub = EventHub.getInstance();
 
 const fieldMap = {
-    height: ['height', 'height-inpt'],
-    weight: ['weight', 'weight-inpt'],
-    goalWeight: ['goal-weight', 'goal-weight-inpt'],
-    dob: ['dob'],
-    gender: ['gender', 'gender-inpt'],
-    activity: ['activity-level', 'activity']
+  height: ['height', 'height-inpt'],
+  weight: ['weight', 'weight-inpt'],
+  goalWeight: ['goal-weight', 'goal-weight-inpt'],
+  dob: ['dob'],
+  gender: ['gender', 'gender-inpt'],
+  activity: ['activity-level', 'activity']
 };
 
-function getElement(id) {
-    return document.getElementById(id);
+function getEl(id) {
+  return document.getElementById(id);
 }
 
-function setValue(id, value) {
-    const el = getElement(id);
-    if (el && value !== undefined) el.value = value;
-}
-
-function gatherFormData() {
-    const profile = {};
-    for (const [key, ids] of Object.entries(fieldMap)) {
-        for (const id of ids) {
-            const el = getElement(id);
-            if (el && el.value) {
-                profile[key] = el.value;
-                break;
-            }
-        }
+function populate(data) {
+  for (const [key, ids] of Object.entries(fieldMap)) {
+    const value = data[key];
+    if (value) {
+      ids.forEach(id => {
+        const el = getEl(id);
+        if (el) el.value = value;
+      });
     }
-    return profile;
+  }
 }
 
-async function saveData() {
-    const data = gatherFormData();
-    await repo.saveProfile(data);
-}
-
-async function populateForm() {
-    const data = await repo.getProfile();
-    for (const [key, ids] of Object.entries(fieldMap)) {
-        const val = data[key];
-        for (const id of ids) {
-            setValue(id, val);
-        }
+function collect() {
+  const data = {};
+  for (const [key, ids] of Object.entries(fieldMap)) {
+    for (const id of ids) {
+      const el = getEl(id);
+      if (el && el.value) {
+        data[key] = el.value;
+        break;
+      }
     }
+  }
+  return data;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    populateForm();
-    for (const ids of Object.values(fieldMap)) {
-        for (const id of ids) {
-            const el = getElement(id);
-            if (el) {
-                el.addEventListener('change', saveData);
-            }
-        }
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  for (const ids of Object.values(fieldMap)) {
+    ids.forEach(id => {
+      const el = getEl(id);
+      if (el) {
+        el.addEventListener("change", () => {
+          const profile = collect();
+          hub.publish(Events.StoreProfile, profile);
+        });
+      }
+    });
+  }
+
+  hub.subscribe(Events.LoadProfileSuccess, (data) => {
+    populate(data);
+  });
 });
