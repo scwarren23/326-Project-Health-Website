@@ -13,7 +13,8 @@
         <!--<div class="header">
             <h1>Track Your Workouts</h1>
         </div>-->
-        <div class="input">
+    <div class="main-page">
+        <form id="input">
             <div id="activity-dropdown">
                 <label for="activity">Activity Type?</label>
                 <select name="activity-dropdown" id="activity">
@@ -41,15 +42,21 @@
                 <textarea id="notes" name="notes" rows="4" cols="40"></textarea>
             </div> 
             <div id="submit-button">
-                <button id="submit" onclick="addWorkout()">Add Workout</button>
+                <button id="submit" type="submit">Add Workout</button>
             </div>
-        </div>
+        </form>
         <div class="workout-list">
             <h2>Workout History</h2>
             <ul id="workout-history">
-                <!-- -->
-                <!-- -->
-                <li>
+                <!--<li>
+                <strong>_/_/_</strong>
+                <strong>Activity:</strong> _<br />
+                <strong>Duration:</strong> _ min<br />
+                <strong>Distance:</strong> _ miles<br />
+                <strong>RPE:</strong> _<br />
+                <strong>Notes:</strong> _ <br />
+                </li>-->
+                <!--<li>
                     <strong>3/5/2025</strong>
                     <strong>Activity:</strong> Run<br/>
                     <strong>Duration:</strong> 35 min<br/>
@@ -71,7 +78,7 @@
                     <strong>Distance:</strong> N/A<br />
                     <strong>RPE:</strong> 5<br />
                     <strong>Notes:</strong> Pull day <br />
-                    </li>
+                    </li>-->
             </ul>
         
             <div class="summary">
@@ -81,5 +88,7 @@
                 <p id="average-rpe"><strong>Average RPE: </strong>3.6667</p>
             </div>
         </div>
+    </div>
+    <script src="app.js"></script>
     </body>
 </html>
