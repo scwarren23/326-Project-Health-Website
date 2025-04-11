@@ -65,7 +65,7 @@ async function searchFood() {
         displayResults(data);
     } catch (error) {
         console.error("Error fetching data:", error);
-        document.getElementById("results").textContent = "Error fetching data. Please try again.";
+        document.getElementById("results").textContent = "Error fetching data. Make sure you added the API key on slide 2 of the slide deck, to foodTracker.js";
     }
 }
 
