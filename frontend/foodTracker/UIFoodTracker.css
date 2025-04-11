@@ -111,3 +111,35 @@ body {
 .food-list .food-items ul{
     font-size: large;
 }
+.food-list .food-items ul li:hover{
+    text-decoration: line-through;
+}
+#results {
+    white-space: pre-wrap;   
+    word-break: break-word; 
+    overflow: auto;          
+    max-height: 500px;       
+    text-align: left;       
+    padding: 10px;
+  }
+
+#resultsDisplay {
+    text-align: left;
+}
+#resultsDisplay li:hover{
+    background-color: rgb(210, 210, 210);
+  }
+
+
+progress {
+    --progress-color: green; 
+    background-color: white;
+}
+
+progress::-webkit-progress-value {
+    background-color: var(--progress-color);
+}
+
+progress::-moz-progress-bar {
+    background-color: var(--progress-color);
+}
