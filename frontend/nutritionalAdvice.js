@@ -27,6 +27,53 @@ document.addEventListener("DOMContentLoaded", function () {
         activityLevelInput.value = savedInputs.activityLevel;
     };
 
+    let macrosChart;
+    function renderChart(proteinGrams, fatGrams, carbGrams) {
+        const ctx = document.getElementById('macrosChart').getContext('2d');
+
+        if (macrosChart) {
+            macrosChart.destroy();
+        }
+
+        macrosChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Protein (g)', 'Fats (g)', 'Carbs (g)'],
+                datasets: [{
+                    data: [proteinGrams, fatGrams, carbGrams],
+                    backgroundColor: ['#FF6384', '#FFCE56', '#36A2EB'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Macronutrient Breakdown'
+                    }
+                }
+            }
+        });
+    }
+
+    const toggleViewBtn = document.getElementById("toggle-view");
+    toggleViewBtn.addEventListener("click", () => {
+        const chartContainer = document.getElementById("chart-container");
+        const recDashboard = document.getElementById("reccomendations-dashboard");
+
+        const isChartVisible = chartContainer.style.display === "block";
+        chartContainer.style.display = isChartVisible ? "none" : "block";
+        recDashboard.style.display = isChartVisible ? "block" : "none";
+
+        toggleViewBtn.textContent = isChartVisible
+            ? "Switch to Graph View"
+            : "Switch to Text View";
+    });
+
     form.addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -125,6 +172,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <p>${fatGrams} grams of fats per day</p>
             <p>${carbGrams} grams of carbs per day</p>
         `;
+
+        renderChart(proteinGrams, fatGrams, carbGrams);
     });
 
     const resetBtn = document.getElementById("reset-btn");
@@ -137,12 +186,16 @@ document.addEventListener("DOMContentLoaded", function () {
         Object.values(errors).forEach(el => el.textContent = "");
 
         recommendationsDashboard.innerHTML = `
-            <p>Based on your goal weight of ${goalWeight} lbs:</p>
-            <p>Total Daily Calories: ${totalCalories}</p>
-            <p>${proteinGrams} grams of protein per day</p>
-            <p>${fatGrams} grams of fats per day</p>
-            <p>${carbGrams} grams of carbs per day</p>
+            <p>Based on your goal weight of __ lbs:</p>
+            <p>Total Daily Calories: __</p>
+            <p>__ grams of protein per day</p>
+            <p>__ grams of fats per day</p>
+            <p>__ grams of carbs per day</p>
         `;
+
+        document.getElementById("chart-container").style.display = "none";
+        recommendationsDashboard.style.display = "block";
+        toggleViewBtn.textContent = "Switch to Graph View";
     })
 });
 
