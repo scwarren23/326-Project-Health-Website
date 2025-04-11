@@ -7,7 +7,9 @@ document.addEventListener("DOMContentLoaded", () => { //same as in-class exercis
   
       // Show the requested view
       document.getElementById(viewId).style.display = "block";
+
       document.getElementById("main-content").style.height = document.getElementById(viewId).style.height
+
     }
     //console.log(1)
   
