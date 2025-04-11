@@ -15,13 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const workouts = [];
 
-    const errors = {
-        activity: document.getElementById("activity-error"),
-        duration: document.getElementById("duration-error"),
-        distance: document.getElementById("distance-error"),
-        rpe: document.getElementById("rpe-error"),
-        notes: document.getElementById("notes-error")
-    };
+    // const errors = {
+    //     activity: document.getElementById("activity-error"),
+    //     duration: document.getElementById("duration-error"),
+    //     distance: document.getElementById("distance-error"),
+    //     rpe: document.getElementById("rpe-error"),
+    //     notes: document.getElementById("notes-error")
+    // };
 
     function updateSummary() {
         let totalDuration = 0;
@@ -40,6 +40,57 @@ document.addEventListener("DOMContentLoaded", () => {
         averageRpeElem.textContent = `Average RPE: ${averageRpe.toFixed(2)}`;
     }
 
+
+    function addWorkout(workout) {
+        return new Promise((resolve, reject) => {
+            const dbRequest = indexedDB.open("workoutTrackerDB", 1);
+            dbRequest.onsuccess = (event) => {
+                const db = event.target.result;
+                const transaction = db.transaction("workouts", "readwrite");
+                const store = transaction.objectStore("workouts");
+                const request = store.add(workout);
+                request.onsuccess = () => resolve();
+                request.onerror = (err) => reject(err);
+            };
+            dbRequest.onerror = (event) => reject(event.target.error);
+        });
+    }
+    function getAllWorkouts() {
+        return new Promise((resolve, reject) => {
+            const dbRequest = indexedDB.open("workoutTrackerDB", 1);
+            dbRequest.onsuccess = (event) => {
+                const db = event.target.result;
+                const transaction = db.transaction("workouts", "readonly");
+                const store = transaction.objectStore("workouts");
+                const request = store.getAll();
+                request.onsuccess = (event) => resolve(event.target.result);
+                request.onerror = (err) => reject(err);
+            };
+            dbRequest.onerror = (event) => reject(event.target.error);
+        });
+    }
+    function loadWorkoutsFromDB() {
+        getAllWorkouts().then(fetchedWorkouts => {
+            workouts = fetchedWorkouts;
+            workoutHistory.innerHTML = '';
+            workouts.forEach(workout => {
+                const workoutItem = document.createElement("li");
+                workoutItem.innerHTML = `
+                    <strong>${new Date(workout.date).toLocaleDateString()}</strong><br />
+                    <strong>Activity:</strong> ${workout.activity}<br />
+                    <strong>Duration:</strong> ${workout.duration} min<br />
+                    <strong>Distance:</strong> ${workout.distance} miles<br />
+                    <strong>RPE:</strong> ${workout.rpe}<br />
+                    <strong>Notes:</strong> ${workout.notes ? workout.notes : "None"}<br />
+                `;
+                workoutHistory.appendChild(workoutItem);
+            });
+            updateSummary();
+        }).catch(err => {
+            console.error('Failed to load:', err);
+        });
+    }
+
     //if (workoutHistory.children.length === 1 && workoutHistory.children[0].innerText.includes("_")) {
     //    workoutHistory.innerHTML = "";
     //}
@@ -54,6 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const notes = notesInput.value.trim();
 
         console.log(activity, duration, distance, rpe, notes);
+        const date = new Date();
+        if (isNaN(date.getTime())) {
+            console.error('Invalid Date object!');
+            return;  
+        }
 
         if (duration === ""|| rpe === "") {
             alert("Please fill out all required fields (duration and RPE)");
@@ -61,7 +117,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const workoutItem = document.createElement("li");
-        const date = new Date().toLocaleDateString();
+        //const date = new Date().toLocaleDateString();
+        const workout = {
+            activity,
+            duration,
+            distance,
+            rpe,
+            notes,
+            date: date.toISOString()
+        };
 
         workoutItem.innerHTML = `
             <strong>${date}</strong><br />
@@ -74,6 +138,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
         workoutHistory.appendChild(workoutItem);
         console.log("Form submitted");
+
+        addWorkout(workout).then(() => {
+            workouts.push(workout);
+            const workoutItem = document.createElement("li");
+            workoutItem.innerHTML = `
+                <strong>${date.toLocaleDateString()}</strong><br />
+                <strong>Activity:</strong> ${activity}<br />
+                <strong>Duration:</strong> ${duration} min<br />
+                <strong>Distance:</strong> ${distance} miles<br />
+                <strong>RPE:</strong> ${rpe}<br />
+                <strong>Notes:</strong> ${notes ? notes : "None"}<br />
+            `;
+            workoutHistory.appendChild(workoutItem);
+            updateSummary();
+
+            form.reset();
+        }).catch(err => {
+            console.error('Failed to add:', err);
+        });
+        loadWorkoutsFromDB();
 
         workouts.push({
             activity: activity,
