@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const rpeInput = document.getElementById("rpe");
     const notesInput = document.getElementById("notes");
 
+    const workoutHistory = document.getElementById("workout-history");
+    console.log(workoutHistory);
+
     const errors = {
         activity: document.getElementById("activity-error"),
         duration: document.getElementById("duration-error"),
@@ -14,9 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
         notes: document.getElementById("notes-error")
     };
 
-    if (workoutHistory.children.length === 1 && workoutHistory.children[0].innerText.includes("_")) {
-        workoutHistory.innerHTML = "";
-    }
+    //if (workoutHistory.children.length === 1 && workoutHistory.children[0].innerText.includes("_")) {
+    //    workoutHistory.innerHTML = "";
+    //}
 
     form.addEventListener("submit", function (event) {
         event.preventDefault();
@@ -26,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const distance = distanceInput.value.trim();
         const rpe = rpeInput.value.trim();
         const notes = notesInput.value.trim();
+
+        console.log(activity, duration, distance, rpe, notes);
 
         if (duration === ""|| rpe === "") {
             alert("Please fill out all required fields (duration and RPE)");
@@ -44,11 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
             <strong>Notes:</strong> ${notes ? notes : "None"}<br />
         `;
 
-        // Add the new workout to the history list
         workoutHistory.appendChild(workoutItem);
+        console.log("Form submitted");
 
-        // Reset the form
         form.reset();
     });
-
+    
 });
