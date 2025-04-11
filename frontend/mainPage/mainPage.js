@@ -1,105 +1,126 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const editButton = document.getElementById("edit-button");
-    const saveButton = document.getElementById("save-button");
+document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector(".account-form");
 
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const heightInput = document.getElementById("height");
+    const weightInput = document.getElementById("weight");
+    const goalWeightInput = document.getElementById("goal-weight");
+    const dobInput = document.getElementById("dob");
+    const genderInput = document.getElementById("gender");
+    const activityLevelInput = document.getElementById("activity-level");
+
+    const editButton = document.getElementById("edit-button");
+    const saveButton = document.getElementById("save-button");
+
     const errors = {
+        name: document.getElementById("name-error"),
+        email: document.getElementById("email-error"),
         height: document.getElementById("height-error"),
         weight: document.getElementById("weight-error"),
         goal: document.getElementById("goal-error"),
+        dob: document.getElementById("dob-error"),
         gender: document.getElementById("gender-error"),
-        activity: document.getElementById("activity-error"),
-        name: document.getElementById("name-error"),
-        email: document.getElementById("email-error"),
-        dob: document.getElementById("dob-error")
+        activity: document.getElementById("activity-error")
     };
 
-    const fields = {
-        name: document.getElementById("name"),
-        email: document.getElementById("email"),
-        height: document.getElementById("height"),
-        weight: document.getElementById("weight"),
-        goal: document.getElementById("goal-weight"),
-        dob: document.getElementById("dob"),
-        gender: document.getElementById("gender"),
-        activity: document.getElementById("activity-level")
-    };
-
-    const formElements = Object.values(fields);
-
-    const validateField = (fieldName) => {
-        const value = fields[fieldName].value.trim();
-        const errorEl = errors[fieldName];
-        errorEl.textContent = "";
-
-        switch (fieldName) {
-            case "name":
-                if (!value) errorEl.textContent = "Name is required.";
-                break;
-            case "email":
-                if (!value) errorEl.textContent = "Email is required.";
-                else if (!/^\S+@\S+\.\S+$/.test(value)) errorEl.textContent = "Enter a valid email address.";
-                break;
-            case "height":
-            case "weight":
-            case "goal":
-                if (!value) errorEl.textContent = "This field is required.";
-                else if (Number(value) <= 0) errorEl.textContent = "Must be a positive number.";
-                break;
-            case "dob":
-                if (!value) errorEl.textContent = "Date of birth is required.";
-                break;
-            case "gender":
-                if (!fields[fieldName].value) errorEl.textContent = "Please select a gender.";
-                break;
-            case "activity":
-                if (!fields[fieldName].value) errorEl.textContent = "Please select an activity level.";
-                break;
-        }
-    };
-
-    const validateForm = () => {
-        let valid = true;
-        Object.keys(fields).forEach(field => {
-            validateField(field);
-            if (errors[field].textContent) valid = false;
-        });
-        return valid;
-    };
-
-    // Attach real-time validation
-    Object.keys(fields).forEach(field => {
-        const el = fields[field];
-        const eventType = el.tagName === "SELECT" ? "change" : "input";
-        el.addEventListener(eventType, () => validateField(field));
-    });
+    // Load saved data if it exists
+    const savedData = JSON.parse(localStorage.getItem("accountInfo"));
+    if (savedData) {
+        nameInput.value = savedData.name || "";
+        emailInput.value = savedData.email || "";
+        heightInput.value = savedData.height || "";
+        weightInput.value = savedData.weight || "";
+        goalWeightInput.value = savedData.goalWeight || "";
+        dobInput.value = savedData.dob || "";
+        genderInput.value = savedData.gender || "";
+        activityLevelInput.value = savedData.activityLevel || "";
+    }
 
     editButton.addEventListener("click", () => {
-        formElements.forEach(el => {
-            if (el.tagName === "SELECT") {
-                el.disabled = false;
-            } else {
-                el.readOnly = false;
-            }
-        });
+        [nameInput, emailInput, heightInput, weightInput, goalWeightInput, dobInput].forEach(input => input.readOnly = false);
+        [genderInput, activityLevelInput].forEach(select => select.disabled = false);
         saveButton.disabled = false;
     });
 
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
+    function validateField(inputEl, errorEl, type = "text") {
+        const value = inputEl.value.trim();
+        errorEl.textContent = "";
 
-        const isValid = validateForm();
-        if (!isValid) return;
-
-        
-
-        formElements.forEach(el => {
-            if (el.tagName === "SELECT") {
-                el.disabled = true;
-            } else {
-                el.readOnly = true;
+        if (type === "email") {
+            if (!value) {
+                errorEl.textContent = "Email is required.";
+                return false;
+            } else if (!/^\S+@\S+\.\S+$/.test(value)) {
+                errorEl.textContent = "Please enter a valid email.";
+                return false;
             }
-        });
+        } else if (type === "number") {
+            if (!value || isNaN(value) || Number(value) <= 0) {
+                errorEl.textContent = "Please enter a valid positive number.";
+                return false;
+            }
+        } else if (type === "date") {
+            if (!value) {
+                errorEl.textContent = "Date of birth is required.";
+                return false;
+            }
+        } else if (type === "select") {
+            if (!value) {
+                errorEl.textContent = "Please select a value.";
+                return false;
+            }
+        } else {
+            if (!value) {
+                errorEl.textContent = "This field is required.";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Attach live validation to fields
+    nameInput.addEventListener("input", () => validateField(nameInput, errors.name));
+    emailInput.addEventListener("input", () => validateField(emailInput, errors.email, "email"));
+    heightInput.addEventListener("input", () => validateField(heightInput, errors.height, "number"));
+    weightInput.addEventListener("input", () => validateField(weightInput, errors.weight, "number"));
+    goalWeightInput.addEventListener("input", () => validateField(goalWeightInput, errors.goal, "number"));
+    dobInput.addEventListener("input", () => validateField(dobInput, errors.dob, "date"));
+    genderInput.addEventListener("change", () => validateField(genderInput, errors.gender, "select"));
+    activityLevelInput.addEventListener("change", () => validateField(activityLevelInput, errors.activity, "select"));
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const validName = validateField(nameInput, errors.name);
+        const validEmail = validateField(emailInput, errors.email, "email");
+        const validHeight = validateField(heightInput, errors.height, "number");
+        const validWeight = validateField(weightInput, errors.weight, "number");
+        const validGoal = validateField(goalWeightInput, errors.goal, "number");
+        const validDOB = validateField(dobInput, errors.dob, "date");
+        const validGender = validateField(genderInput, errors.gender, "select");
+        const validActivity = validateField(activityLevelInput, errors.activity, "select");
+
+        if (!(validName && validEmail && validHeight && validWeight && validGoal && validDOB && validGender && validActivity)) {
+            return;
+        }
+
+        const accountInfo = {
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            height: heightInput.value.trim(),
+            weight: weightInput.value.trim(),
+            goalWeight: goalWeightInput.value.trim(),
+            dob: dobInput.value.trim(),
+            gender: genderInput.value,
+            activityLevel: activityLevelInput.value
+        };
+
+        localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
+
+        [nameInput, emailInput, heightInput, weightInput, goalWeightInput, dobInput].forEach(input => input.readOnly = true);
+        [genderInput, activityLevelInput].forEach(select => select.disabled = true);
         saveButton.disabled = true;
-    })
-})
+    });
+});
