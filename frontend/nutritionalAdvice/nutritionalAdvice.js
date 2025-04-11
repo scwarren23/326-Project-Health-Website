@@ -198,7 +198,3 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleViewBtn.textContent = "Switch to Graph View";
     })
 });
-
-
-
-
