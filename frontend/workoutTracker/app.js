@@ -9,6 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const workoutHistory = document.getElementById("workout-history");
     console.log(workoutHistory);
 
+    const totalDurationElem = document.getElementById("total-duration");
+    const totalDistanceElem = document.getElementById("total-distance");
+    const averageRpeElem = document.getElementById("average-rpe");
+
+    const workouts = [];
+
     const errors = {
         activity: document.getElementById("activity-error"),
         duration: document.getElementById("duration-error"),
@@ -16,6 +22,23 @@ document.addEventListener("DOMContentLoaded", () => {
         rpe: document.getElementById("rpe-error"),
         notes: document.getElementById("notes-error")
     };
+
+    function updateSummary() {
+        let totalDuration = 0;
+        let totalDistance = 0;
+        let totalRpe = 0;
+
+        workouts.forEach(workout => {
+            totalDuration += workout.duration;
+            totalDistance += workout.distance;
+            totalRpe += workout.rpe;
+        });
+
+        const averageRpe = totalRpe / workouts.length;
+        totalDurationElem.textContent = `Duration: ${Math.floor(totalDuration / 60)} hours ${totalDuration % 60} min`;
+        totalDistanceElem.textContent = `Total Distance: ${totalDistance} miles`;
+        averageRpeElem.textContent = `Average RPE: ${averageRpe.toFixed(2)}`;
+    }
 
     //if (workoutHistory.children.length === 1 && workoutHistory.children[0].innerText.includes("_")) {
     //    workoutHistory.innerHTML = "";
@@ -25,9 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
 
         const activity = activityInput.value;
-        const duration = durationInput.value.trim();
-        const distance = distanceInput.value.trim();
-        const rpe = rpeInput.value.trim();
+        const duration = parseFloat(durationInput.value.trim());
+        const distance = parseFloat(distanceInput.value.trim());
+        const rpe = parseFloat(rpeInput.value.trim());
         const notes = notesInput.value.trim();
 
         console.log(activity, duration, distance, rpe, notes);
@@ -51,6 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         workoutHistory.appendChild(workoutItem);
         console.log("Form submitted");
+
+        workouts.push({
+            activity: activity,
+            duration: duration,
+            distance: distance,
+            rpe: rpe,
+            notes: notes,
+        });
+        updateSummary();
 
         form.reset();
     });
