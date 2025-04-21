@@ -1,21 +1,33 @@
 {
-  "name": "health-hub-app",
+  "name": "",
   "version": "1.0.0",
-  "description": "A health and nutrition tracking web app",
-  "main": "server.js",
-  "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "",
+  "main": "index.js",
   "type": "module",
-  "dependencies": {
-    "express": "^4.21.2"
+  "license": "AGPL-version-3.0",
+  "private": false,
+  "engines": {
+    "node": ">= 14.0.0",
+    "npm": ">= 6.0.0"
   },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": "",
+  "keywords": [],
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "contributors": [],
+  "scripts": {
+    "dev": "",
+    "test": ""
+  },
+  "dependencies": {
+    "express": "^5.1.0"
   }
 }
