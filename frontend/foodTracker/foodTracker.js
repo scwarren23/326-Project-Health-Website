@@ -1,4 +1,4 @@
-const apiKey = "eIIlEGTFpWMuB9jb4vy2PgxfGf8nMfa5wqt9YeUA"; 
+const apiKey = ""; 
 let currFood = "";
 let db;
 
