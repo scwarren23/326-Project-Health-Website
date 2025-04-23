@@ -1,52 +1,24 @@
-const apiKey = "";
-let currFood =""; 
+const apiKey = "eIIlEGTFpWMuB9jb4vy2PgxfGf8nMfa5wqt9YeUA"; 
+let currFood = "";
+let db;
 
-let nutObj = {
-    "serving":1,
-    "unit":"n",
-    1008: 0,  // Calories
-    1003: 0,  // Protein
-    1004: 0,  // Fat
-    1005: 0,  // Carbohydrates
-    2000: 0,  // Sugar
-    1079: 0,  // Fiber
-    1087: 0,  // Calcium
-    1089: 0,  // Iron
-    1093: 0,  // Sodium
-    1104: 0,  // Vitamin A
-    1162: 0,  // Vitamin C
-    1253: 0   // Cholesterol
-  };
-  let trackersValues = {
-    1008: 0,  // Calories
-    1003: 0,  // Protein
-    1004: 0,  // Fat
-    1005: 0,  // Carbohydrates
-    2000: 0,  // Sugar
-    1079: 0,  // Fiber
-    1087: 0,  // Calcium
-    1089: 0,  // Iron
-    1093: 0,  // Sodium
-    1104: 0,  // Vitamin A
-    1162: 0,  // Vitamin C
-    1253: 0   // Cholesterol
-  };
-  let defaultTrackerTotals = {
-    1008: 2500,   // Calories
-    1003: 56,     // Protein (g)
-    1004: 80,     // Fat (g)
-    1005: 300,    // Carbohydrates (g)
-    2000: 36,     // Sugar (g)
-    1079: 34,     // Fiber (g)
-    1087: 1000,   // Calcium (mg)
-    1089: 8,      // Iron (mg)
-    1093: 2300,   // Sodium (mg)
-    1104: 900,    // Vitamin A (µg RAE)
-    1162: 90,     // Vitamin C (mg)
-    1253: 300     // Cholesterol (mg)
+
+const request = indexedDB.open("foodTrackerDB", 1);
+request.onerror = () => console.error("Database failed to open");
+request.onsuccess = () => {
+    db = request.result;
+    loadSavedFoods();
 };
+request.onupgradeneeded = (e) => {
+    let db = e.target.result;
+    db.createObjectStore("foods", { keyPath: "id", autoIncrement: true });
+};
+
+
+let nutObj = { "serving": 1, "unit": "n", 1008: 0, 1003: 0, 1004: 0, 1005: 0, 2000: 0, 1079: 0, 1087: 0, 1089: 0, 1093: 0, 1104: 0, 1162: 0, 1253: 0 };
+let trackersValues = { 1008: 0, 1003: 0, 1004: 0, 1005: 0, 2000: 0, 1079: 0, 1087: 0, 1089: 0, 1093: 0, 1104: 0, 1162: 0, 1253: 0 };
+let defaultTrackerTotals = { 1008: 2500, 1003: 56, 1004: 80, 1005: 300, 2000: 36, 1079: 34, 1087: 1000, 1089: 8, 1093: 2300, 1104: 900, 1162: 90, 1253: 300 };
 let x = structuredClone(nutObj);
-//console.log(x);
 
 async function searchFood() {
     nutObj = structuredClone(x);
@@ -54,9 +26,9 @@ async function searchFood() {
     const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${foodQuery}&api_key=${apiKey}`;
     const displayTitle = document.getElementById("displayTitle");
     const displayTitle2 = document.getElementById("displayTitle2");
-    
+
     document.getElementById("resultsDisplay").innerHTML = "";
-    
+
     try {
         const response = await fetch(url);
         const data = await response.json();
@@ -65,151 +37,160 @@ async function searchFood() {
         displayResults(data);
     } catch (error) {
         console.error("Error fetching data:", error);
-        document.getElementById("results").textContent = "Error fetching data. Make sure you added the API key on slide 2 of the slide deck, to foodTracker.js";
     }
 }
 
 function displayResults(data) {
-    
     const resultsDiv = document.getElementById("resultsDisplay");
-    // const dataResults = data.foods.forEach(element => {
-    //     return element.description+element.brandName
-    // });
-    
     let prev = '';
-    let j=15
-    for (let i=0;i<j;i++){
-        if (data.foods[i].description === prev){
-            j+=1
-            continue
-        }else{
+    let j = 15;
+    for (let i = 0; i < j; i++) {
+        if (data.foods[i].description === prev) {
+            j += 1;
+            continue;
+        } else {
             prev = data.foods[i].description;
         }
-        //resultsDiv.textContent = JSON.stringify(data.foods, null, 2); // Pretty print JSON response
         const listItem = document.createElement('li');
         listItem.classList.add('result-item');
+        listItem.textContent = data.foods[i].brandName
+            ? `${data.foods[i].description}, ${data.foods[i].brandName}`
+            : data.foods[i].description;
 
-        if (data.foods.brandName){
-            //resultsDiv.textContent = resultsDiv.textContent+`${data.foods[i].description},${data.foods[i].brandName}\n`
-            
-            listItem.textContent = `${data.foods[i].description},${data.foods[i].brandName}`;
-        }else{
-             //resultsDiv.textContent = resultsDiv.textContent+`${data.foods[i].description}\n`
-             listItem.textContent = `${data.foods[i].description}`;
-        }
-        listItem.addEventListener('click',()=>{
+        listItem.addEventListener('click', () => {
             document.getElementById("resultsDisplay").innerHTML = "";
             resultsDiv.appendChild(listItem);
             currFood = listItem.textContent;
-            displayTitle.style.display = "none";
-            displayTitle2.style.display = "block";
+            document.getElementById("displayTitle").style.display = "none";
+            document.getElementById("displayTitle2").style.display = "block";
             saveData(data.foods[i]);
         });
 
         resultsDiv.appendChild(listItem);
     }
-    
 }
 
-function saveData(nutrientData){
-    let nutrients = nutrientData.foodNutrients
-    if (nutrientData.servingSize){
+function saveData(nutrientData) {
+    let nutrients = nutrientData.foodNutrients;
+    if (nutrientData.servingSize) {
         nutObj["serving"] = nutrientData.servingSize;
-        // console.log(nutrientData.servingSizeUnit)
         nutObj["unit"] = nutrientData.servingSizeUnit;
-        // console.log(nutrientData.servingSizeUnit)
-        
-    }else{
+    } else {
         nutObj["serving"] = 1;
-        
     }
-    //console.log(nutrientData.servingSize);
     nutrients.forEach(element => {
-        if (Object.keys(nutObj).includes(String(element.nutrientId))){
+        if (Object.keys(nutObj).includes(String(element.nutrientId))) {
             nutObj[String(element.nutrientId)] = element.value;
         }
     });
 }
-//Ids Protein 1003, Fat 1004, carb 1005, calories 1008,sugar 2000, fiber 1079, 1087 calcium,iron 1089
-//sodium 1093, 1104 vitA. 1162 vitC, cholesterol 1253,
-
-
 
 function amountFood() {
-    // console.log(nutObj['unit'])
     const foodQuery = String(document.getElementById("amountInput").value).toLowerCase();
-    let amtEaten = 0;
-    // console.log(foodQuery);
-    // console.log(foodQuery.includes("serving"));
-    // console.log(nutObj["serving"]);
-    // nutObj["1003"] = 10;
-    if (foodQuery.includes("serving")) {
-        amtEaten = parseFloat(foodQuery) * nutObj["serving"];
-    } else {
-        amtEaten = parseFloat(foodQuery);
-    }
+    let amtEaten = foodQuery.includes("serving")
+        ? parseFloat(foodQuery) * nutObj["serving"]
+        : parseFloat(foodQuery);
 
-    
     const foodNutObj = structuredClone(nutObj);
-
-    
     for (let key in foodNutObj) {
         if (key !== "serving" && key !== "unit") {
-            foodNutObj[key] = foodNutObj[key] * (amtEaten / foodNutObj["serving"]);
+            foodNutObj[key] *= amtEaten / foodNutObj["serving"];
         }
     }
 
-    
-    const foodItemsDiv = document.getElementById("foodItems");
     const foodlistItem = document.createElement('li');
     foodlistItem.classList.add('food-list-item');
+    foodlistItem.textContent = foodNutObj["unit"] === "n"
+        ? `${(amtEaten / foodNutObj["serving"]).toFixed(2)} servings: ${currFood}`
+        : `${(amtEaten / foodNutObj["serving"]).toFixed(2)} servings / ${amtEaten}${foodNutObj["unit"]}: ${currFood}`;
 
-    if (foodNutObj["unit"] === "n") {
-        foodlistItem.textContent = `${(amtEaten / foodNutObj["serving"]).toFixed(2)} servings: ${currFood}`;
-    } else {
-        foodlistItem.textContent = `${(amtEaten / foodNutObj["serving"]).toFixed(2)} servings / ${amtEaten}${foodNutObj["unit"]}: ${currFood}`;
-    }
-
-    
     foodlistItem.foodNutObj = foodNutObj;
 
-    
     foodlistItem.addEventListener('click', function () {
-        for (let key in foodlistItem.foodNutObj) {
+        for (let key in this.foodNutObj) {
             if (key !== "serving" && key !== "unit") {
-                trackersValues[key] -= foodlistItem.foodNutObj[key];
+                trackersValues[key] -= this.foodNutObj[key];
             }
         }
 
-        foodlistItem.remove();
+        const idToDelete = this.dataset.dbId;
+        const tx = db.transaction(["foods"], "readwrite");
+        const store = tx.objectStore("foods");
+        store.delete(Number(idToDelete));
+
+        this.remove();
         updateProgress();
     });
 
-   
-    foodItemsDiv.appendChild(foodlistItem);
+    document.getElementById("foodItems").appendChild(foodlistItem);
     document.getElementById("appearInfo").style.display = "none";
     document.getElementById("deleteInfo").style.display = "block";
 
-    
     for (let key in foodNutObj) {
         if (key !== "serving" && key !== "unit") {
             trackersValues[key] += foodNutObj[key];
         }
     }
 
+    const tx = db.transaction(["foods"], "readwrite");
+    const store = tx.objectStore("foods");
+    const item = {
+        label: foodlistItem.textContent,
+        nutData: foodNutObj
+    };
+    const request = store.add(item);
+    request.onsuccess = () => foodlistItem.dataset.dbId = request.result;
+
     updateProgress();
 }
 
+function loadSavedFoods() {
+    const tx = db.transaction("foods", "readonly");
+    const store = tx.objectStore("foods");
+    const request = store.openCursor();
+
+    request.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+            const foodNutObj = cursor.value.nutData;
+            const foodlistItem = document.createElement('li');
+            foodlistItem.classList.add('food-list-item');
+            foodlistItem.textContent = cursor.value.label;
+            foodlistItem.dataset.dbId = cursor.key;
+            foodlistItem.foodNutObj = foodNutObj;
+
+            foodlistItem.addEventListener('click', function () {
+                for (let key in this.foodNutObj) {
+                    if (key !== "serving" && key !== "unit") {
+                        trackersValues[key] -= this.foodNutObj[key];
+                    }
+                }
+                const delTx = db.transaction(["foods"], "readwrite");
+                const delStore = delTx.objectStore("foods");
+                delStore.delete(Number(this.dataset.dbId));
+                this.remove();
+                updateProgress();
+            });
+
+            document.getElementById("foodItems").appendChild(foodlistItem);
+
+            for (let key in foodNutObj) {
+                if (key !== "serving" && key !== "unit") {
+                    trackersValues[key] += foodNutObj[key];
+                }
+            }
+
+            cursor.continue();
+        }
+        updateProgress();
+    };
+}
 
 function updateProgress() {
     function setProgressBarColor(progressBar, val) {
-        if (val < 50) {
-            progressBar.style.setProperty('--progress-color', 'blue');
-        } else if (val >= 50 && val <= 100) {
-            progressBar.style.setProperty('--progress-color', 'green');
-        } else {
-            progressBar.style.setProperty('--progress-color', 'red');
-        }
+        if (val < 50) progressBar.style.setProperty('--progress-color', 'blue');
+        else if (val <= 100) progressBar.style.setProperty('--progress-color', 'green');
+        else progressBar.style.setProperty('--progress-color', 'red');
     }
 
     const updateBar = (id, key) => {
