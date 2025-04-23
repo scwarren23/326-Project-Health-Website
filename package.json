@@ -1,8 +1,8 @@
 {
-  "name": "",
+  "name": "326-project-health-website",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "license": "AGPL-version-3.0",
   "private": false,
@@ -17,17 +17,14 @@
   },
   "bugs": "",
   "keywords": [],
-  "author": {
-    "name": "",
-    "email": "",
-    "url": ""
-  },
+  "author": "",
   "contributors": [],
   "scripts": {
     "dev": "",
     "test": ""
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0"
   }
 }

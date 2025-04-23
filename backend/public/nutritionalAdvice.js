@@ -1,4 +1,19 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        const res = await fetch("/api/nutrition");
+        if (res.ok) {
+            const saved = await res.json();
+            goalWeightInput.value = saved.goalWeight;
+            curWeightInput.value = saved.weight;
+            ageInput.value = saved.age;
+            heightInput.value = saved.height;
+            genderInput.value = saved.gender;
+            activityLevelInput.value = saved.activityLevel;
+        }
+    } catch (err) {
+        console.warn("No saved nutrition data from backend:", err.message);
+    }
+    
     const form = document.getElementById("nutritional-form");
     const goalWeightInput = document.getElementById("goal-weight-inpt");
     const curWeightInput = document.getElementById("weight-inpt");
@@ -74,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
             : "Switch to Text View";
     });
 
-    form.addEventListener("submit", function (event) {
+    form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         Object.values(errors).forEach(el => el.textContent = "");
@@ -129,6 +144,16 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         localStorage.setItem("userInputs", JSON.stringify(userInputs));
 
+        try {
+            await fetch("/api/nutrition", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userInputs),
+            });
+        } catch (err) {
+            console.error("Error saving to backend:", err);
+        }
+        
         if (!goalWeight || !age || !height || !weight) {
             recommendationsDashboard.innerHTML = `<p>Fill in all fields to get recommendations.</p>`;
             return;
