@@ -1,6 +1,8 @@
 import { EventHub } from "../eventhub/EventHub.js";
 import { Events } from "../eventhub/Events.js";
 
+console.log("mainPage.js loaded");
+
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector(".account-form");
 
@@ -40,6 +42,27 @@ document.addEventListener("DOMContentLoaded", function () {
         activityLevelInput.value = savedData.activityLevel || "";
     }
 
+    (async function loadUserProfile() {
+        try {
+            const res = await fetch("/api/mainPage");
+            if (!res.ok) {
+                throw new Error("Failed to load profile");
+            }
+            const profile = await res.json();
+
+            nameInput.value = profile.name || "";
+            emailInput.value = profile.email || "";
+            heightInput.value = profile.height || "";
+            weightInput.value = profile.weight || "";
+            goalWeightInput.value = profile.goalWeight || "";
+            dobInput.value = profile.dob || "";
+            genderInput.value = profile.gender || "";
+            activityLevelInput.value = profile.activityLevel || "";
+        } catch (err) {
+            console.warn("No profile loaded from backend:", err.message);
+        }
+    })();
+    
     editButton.addEventListener("click", () => {
         [nameInput, emailInput, heightInput, weightInput, goalWeightInput, dobInput].forEach(input => input.readOnly = false);
         [genderInput, activityLevelInput].forEach(select => select.disabled = false);
@@ -122,6 +145,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         localStorage.setItem("accountInfo", JSON.stringify(accountInfo));
 
+        (async function saveUserProfile() {
+            try {
+                const res = await fetch("/api/mainPage", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(accountInfo),
+                });
+                const result = await res.json();
+                console.log(result.message);
+            } catch (err) {
+                console.error("Error saving profile:", err);
+            }
+        })();
         EventHub.getInstance().publish(Events.StoreProfile, accountInfo);
 
         [nameInput, emailInput, heightInput, weightInput, goalWeightInput, dobInput].forEach(input => input.readOnly = true);
