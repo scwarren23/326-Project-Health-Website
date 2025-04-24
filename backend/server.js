@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Serve UIDesign.html at root
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/UIDesign/UIDesign.html'));
+  res.sendFile(path.join(__dirname, '../frontend/index/index.html'));
 });
 
 //app.use(express.static("public"));
