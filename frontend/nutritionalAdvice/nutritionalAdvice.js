@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const resetBtn = document.getElementById("reset-btn");
 
-    resetBtn.addEventListener("click", function () {
+    resetBtn.addEventListener("click", async function () {
         form.reset();
 
         localStorage.removeItem("userInputs");
@@ -221,5 +221,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("chart-container").style.display = "none";
         recommendationsDashboard.style.display = "block";
         toggleViewBtn.textContent = "Switch to Graph View";
-    })
+
+        try {
+            const res = await fetch("/api/nutrition", { method: "DELETE" });
+            const result = await res.json();
+            console.log("Nutrition data cleared:", result.message);
+        } catch (err) {
+            console.error("Error deleting nutrition data from backend:", err);
+        }
+    });
 });

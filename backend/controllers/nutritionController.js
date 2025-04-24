@@ -33,4 +33,13 @@ function saveNutritionData(req, res) {
     res.json({message: "Nutrition data saved"});
 }
 
-export { getNutritionData, saveNutritionData };
+function deleteNutritionData(req, res) {
+    if (fs.existsSync(NUTRITION_PATH)) {
+        fs.unlinkSync(NUTRITION_PATH);
+        res.json({ message: "Nutrition data deleted" });
+    } else {
+        res.status(404).json({ message: "No nutrition data to delete" });
+    }
+}
+
+export { getNutritionData, saveNutritionData, deleteNutritionData };
