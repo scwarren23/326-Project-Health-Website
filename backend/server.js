@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // optional: if you have static frontend
+app.use(express.static(path.resolve(__dirname, "../frontend/nutritionalAdvice"))); // optional: if you have static frontend
 
 app.use("/api/nutrition", nutritionRoutes);
 
