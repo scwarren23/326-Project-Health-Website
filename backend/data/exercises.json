@@ -2,14 +2,14 @@
   {
     "name": "Barbell Back Squat",
     "category": "legs",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "tags": [
       "legs",
-      "easy",
+      "medium",
       "Strength",
       "pb:100lbs, 8 reps"
     ],
     "videoURL": "https://www.youtube.com/embed/-bJIpOq-LWk",
-    "id": "1745607140297"
+    "id": "1745609162235"
   }
 ]
