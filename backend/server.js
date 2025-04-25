@@ -23,7 +23,7 @@ app.get('/api/getApiKey', (req, res) => {
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.resolve(__dirname, "../frontend/nutritionalAdvice")));
+app.use(express.static(path.resolve(__dirname, "../frontend")));
 app.use("/api/nutrition", nutritionRoutes);
 
 app.get('/', (req, res) => {
