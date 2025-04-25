@@ -88,8 +88,7 @@ function saveData(nutrientData) {
 }
 
 function amountFood() {
-    const thisFoodId = foodId; 
-    foodId += 1;
+    const thisFoodId = foodId+1;
     
     const foodQuery = String(document.getElementById("amountInput").value).toLowerCase();
     let amtEaten = foodQuery.includes("serving")
