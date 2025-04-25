@@ -25,9 +25,11 @@
   "contributors": [],
   "scripts": {
     "dev": "",
-    "test": ""
+    "test": "",
+    "start":"node backend/server.js"
   },
   "dependencies": {
+    "dotenv": "^16.5.0",
     "cors": "^2.8.5",
     "express": "^5.1.0"
   }
