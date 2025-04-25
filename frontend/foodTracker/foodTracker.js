@@ -88,8 +88,8 @@ function saveData(nutrientData) {
 }
 
 function amountFood() {
-    const thisFoodId = foodId+1;
-    
+    const thisFoodId = foodId;
+    foodId= foodId+1
     const foodQuery = String(document.getElementById("amountInput").value).toLowerCase();
     let amtEaten = foodQuery.includes("serving")
         ? parseFloat(foodQuery) * nutObj["serving"]
@@ -119,7 +119,7 @@ function amountFood() {
         }
 
         try {
-            const response = await fetch(`/api/foods/food/${userId}/${this.dataset.foodId}`, {
+            const response = await fetch(`/api/foods/${userId}/${this.dataset.foodId}`, {
                 method: 'DELETE',
             });
 
@@ -239,7 +239,7 @@ async function loadSavedFoodsFromServer() {
                 }
 
                 try {
-                    const res = await fetch(`/api/foods/food/${userId}/${this.dataset.foodId}`, {
+                    const res = await fetch(`/api/foods/${userId}/${this.dataset.foodId}`, {
                         method: 'DELETE',
                     });
 
