@@ -109,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
             <button class="view-btn">View</button>
             <button class="watch-video-btn">Form Video</button>
+            <button class="edit-btn">Edit</button>
         `;
         exerciseGrid.appendChild(card);
     }
@@ -144,6 +145,8 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.classList.add("hidden");
     });
 
+    
+
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const name = document.getElementById("exerciseName").value;
@@ -162,6 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         addExerciseToDB(exercise);
+        
         modal.classList.add("hidden");
         form.reset();
     });
@@ -174,6 +178,33 @@ document.addEventListener("DOMContentLoaded", function () {
             deleteExerciseFromDB(id);
         }
     });
+
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('edit-btn')) {
+            const card = e.target.closest('.exercise-card');
+            const id = Number(card.getAttribute("data-id"));
+    
+            const transaction = db.transaction(["exercises"], "readonly");
+            const store = transaction.objectStore("exercises");
+            const request = store.get(id);
+    
+            request.onsuccess = function (event) {
+                const exercise = event.target.result;
+                if (exercise) {
+                    document.getElementById("editExerciseId").value = exercise.id;
+                    document.getElementById("editExerciseName").value = exercise.name;
+                    document.getElementById("editExerciseCategory").value = exercise.category;
+                    document.getElementById("editExerciseDifficulty").value = exercise.difficulty;
+                    document.getElementById("editExerciseGoal").value = exercise.tags[2] || "";
+                    document.getElementById("editExerciseVideo").value = exercise.videoURL;
+    
+                    document.getElementById("editCardModal").classList.remove("hidden");
+                }
+            };
+        }
+    });
+    
+    
 
     searchInput.addEventListener("keyup", filterExercises);
     filterSelect.addEventListener("change", filterExercises);
@@ -204,4 +235,107 @@ document.addEventListener("DOMContentLoaded", function () {
             document.body.classList.remove("modal-open");
         }
     });
+    document.getElementById("editCardForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+    
+        const id = Number(document.getElementById("editExerciseId").value);
+        const name = document.getElementById("editExerciseName").value;
+        const category = document.getElementById("editExerciseCategory").value;
+        const difficulty = document.getElementById("editExerciseDifficulty").value;
+        const goal = document.getElementById("editExerciseGoal").value;
+        const rawVideoLink = document.getElementById("editExerciseVideo").value;
+        const videoLink = convertToEmbedURL(rawVideoLink);
+    
+        const updatedExercise = {
+            id,
+            name,
+            category,
+            difficulty,
+            tags: [category, difficulty, goal],
+            videoURL: videoLink
+        };
+    
+        const transaction = db.transaction(["exercises"], "readwrite");
+        const store = transaction.objectStore("exercises");
+        const request = store.put(updatedExercise);
+    
+        request.onsuccess = function () {
+            const oldCard = document.querySelector(`.exercise-card[data-id='${id}']`);
+            if (oldCard) oldCard.remove();
+            addExerciseCardToDOM(updatedExercise);
+            document.getElementById("editCardModal").classList.add("hidden");
+        };
+    
+        request.onerror = function (event) {
+            console.error("Error updating exercise:", event.target.error);
+        };
+
+      
+    });
+
+    const closeEditModal = document.getElementById("closeEditModal");
+
+    closeEditModal.addEventListener("click", () => {
+        editCardModal.classList.add("hidden");
+    });
+
+    function displayPersonalBests(exerciseId) {
+        const transaction = db.transaction(["exercises"], "readonly");
+        const store = transaction.objectStore("exercises");
+        const request = store.get(exerciseId);
+    
+        request.onsuccess = function (event) {
+            const exercise = event.target.result;
+            const personalBestsList = document.getElementById("personal-bests-view");
+            personalBestsList.innerHTML = ""; // Clear the list before adding items
+    
+            if (exercise && exercise.personalBests) {
+                exercise.personalBests.forEach((pb, index) => {
+                    const li = document.createElement("li");
+                    li.textContent = pb;
+                    
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.textContent = "Delete";
+                    deleteBtn.classList.add("delete-pb-btn");
+                    deleteBtn.addEventListener("click", () => deletePersonalBest(exerciseId, index));
+                    
+                    li.appendChild(deleteBtn);
+                    personalBestsList.appendChild(li);
+                });
+            }
+        };
+    }
+    
+
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("view-btn")) {
+            const card = e.target.closest(".exercise-card");
+            const id = Number(card.getAttribute("data-id"));
+        
+            const transaction = db.transaction(["exercises"], "readonly");
+            const store = transaction.objectStore("exercises");
+            const request = store.get(id);
+        
+            request.onsuccess = function (event) {
+                const exercise = event.target.result;
+                if (exercise) {
+                    document.getElementById("exercise-name-view").textContent = exercise.name;
+                    document.getElementById("exercise-instructions").textContent = "Instructions: " + (exercise.instructions || "No instructions provided.");
+        
+                    displayPersonalBests(id);
+        
+                    document.getElementById("viewModal").classList.remove("hidden");
+                    document.getElementById("viewModal").classList.add("visible");
+                }
+            };
+        }
+    });
+
+    document.getElementById("closeViewModal").addEventListener("click", function () {
+        document.getElementById("viewModal").classList.remove("visible");
+        document.getElementById("viewModal").classList.add("hidden");
+    });
+    
+    
+    
 });
