@@ -98,17 +98,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const categoryTag = exercise.category || "Unknown";
         const difficultyTag = exercise.difficulty || "Unknown";
         const goalTag = (exercise.tags && exercise.tags[2]) ? exercise.tags[2] : "Goal";
-    
+        const pbTagObj = exercise.tags && exercise.tags.find(tag => tag.startsWith("pb:"));
+        const pbTag = pbTagObj ? "Personal Best: " + pbTagObj.slice(3) : "";    
         card.innerHTML = `
             <h2>${exercise.name}</h2>
-            <button class="delete-btn">x</button>
+            <button class="delete-btn">&times</button>
             <div class="tags">
                 <span class="tag target">${categoryTag.charAt(0).toUpperCase() + categoryTag.slice(1)}</span>
                 <span class="tag ${difficultyTag}">${difficultyTag.charAt(0).toUpperCase() + difficultyTag.slice(1)}</span>
                 <span class="tag goal">${goalTag}</span>
+                ${pbTag && pbTag !== "Personal Best: " ? `<span class="tag personal-best">${pbTag}</span>` : ""}
             </div>
-            <button class="view-btn">View</button>
             <button class="watch-video-btn">Form Video</button>
+            <button class="edit-btn">Edit</button>
         `;
         exerciseGrid.appendChild(card);
     }
@@ -144,6 +146,8 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.classList.add("hidden");
     });
 
+    
+
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const name = document.getElementById("exerciseName").value;
@@ -152,16 +156,21 @@ document.addEventListener("DOMContentLoaded", function () {
         const goal = document.getElementById("exerciseGoal").value;
         const rawVideoLink = document.getElementById("exerciseVideo").value;
         const videoLink = convertToEmbedURL(rawVideoLink);
+        const pbText = document.getElementById("exercisePBText").value.trim();
+
+        const tags = [category, difficulty, goal];
+        if (pbText) tags.push(`pb:${pbText}`);
 
         const exercise = {
             name,
             category,
             difficulty,
-            tags: [category, difficulty, goal],
+            tags: tags,
             videoURL: videoLink
         };
 
         addExerciseToDB(exercise);
+        
         modal.classList.add("hidden");
         form.reset();
     });
@@ -174,6 +183,36 @@ document.addEventListener("DOMContentLoaded", function () {
             deleteExerciseFromDB(id);
         }
     });
+
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('edit-btn')) {
+            const card = e.target.closest('.exercise-card');
+            const id = Number(card.getAttribute("data-id"));
+    
+            const transaction = db.transaction(["exercises"], "readonly");
+            const store = transaction.objectStore("exercises");
+            const request = store.get(id);
+    
+            request.onsuccess = function (event) {
+                const exercise = event.target.result;
+                if (exercise) {
+                    document.getElementById("editExerciseId").value = exercise.id;
+                    document.getElementById("editExerciseName").value = exercise.name;
+                    document.getElementById("editExerciseCategory").value = exercise.category;
+                    document.getElementById("editExerciseDifficulty").value = exercise.difficulty;
+                    document.getElementById("editExerciseGoal").value = exercise.tags[2] || "";
+                    document.getElementById("editExerciseVideo").value = exercise.videoURL;
+                    const pbTag = exercise.tags.find(tag => tag.startsWith("pb:"));
+                    document.getElementById("editExercisePBText").value = pbTag ? pbTag.split("pb:")[1] : "";
+
+    
+                    document.getElementById("editCardModal").classList.remove("hidden");
+                }
+            };
+        }
+    });
+    
+    
 
     searchInput.addEventListener("keyup", filterExercises);
     filterSelect.addEventListener("change", filterExercises);
@@ -204,4 +243,59 @@ document.addEventListener("DOMContentLoaded", function () {
             document.body.classList.remove("modal-open");
         }
     });
+    document.getElementById("editCardForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+    
+        const id = Number(document.getElementById("editExerciseId").value);
+        const name = document.getElementById("editExerciseName").value;
+        const category = document.getElementById("editExerciseCategory").value;
+        const difficulty = document.getElementById("editExerciseDifficulty").value;
+        const goal = document.getElementById("editExerciseGoal").value;
+        const rawVideoLink = document.getElementById("editExerciseVideo").value;
+        const videoLink = convertToEmbedURL(rawVideoLink);
+        const pbText = document.getElementById("editExercisePBText").value.trim();
+
+        const tags = [category, difficulty, goal];
+        if (pbText) tags.push(`pb:${pbText}`);
+
+    
+        const updatedExercise = {
+            id,
+            name,
+            category,
+            difficulty,
+            tags: tags ,
+            videoURL: videoLink
+        };
+    
+        const transaction = db.transaction(["exercises"], "readwrite");
+        const store = transaction.objectStore("exercises");
+        const request = store.put(updatedExercise);
+    
+        request.onsuccess = function () {
+            const oldCard = document.querySelector(`.exercise-card[data-id='${id}']`);
+            if (oldCard) oldCard.remove();
+            addExerciseCardToDOM(updatedExercise);
+            document.getElementById("editCardModal").classList.add("hidden");
+        };
+    
+        request.onerror = function (event) {
+            console.error("Error updating exercise:", event.target.error);
+        };
+
+      
+    });
+
+    const closeEditModal = document.getElementById("closeEditModal");
+
+    closeEditModal.addEventListener("click", () => {
+        editCardModal.classList.add("hidden");
+    });
+
+    
+    
+
+    
+   
+    
 });
