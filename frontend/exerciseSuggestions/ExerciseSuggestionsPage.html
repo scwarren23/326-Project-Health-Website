@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/exerciseSuggestions/ExerciseSuggestionsPage.css">
-    <script src="/exerciseSuggestions/ExerciseSuggestionsPage.js"></script>
-    <script type="module" src="../index/app.js"></script>
+    <link rel="stylesheet" href="ExerciseSuggestionsPage.css">
+    <script src="ExerciseSuggestionsPage.js"></script>
+    <script type="module" src="../UIDesign/app.js"></script>
 
     <title>Exercise Suggestions Page</title>
   </head>
@@ -33,18 +33,6 @@
         <div class="exercise-grid" id="exerciseGrid">
             
     </div>
-    <div id="personal-best-modal" class="modal hidden">
-      <div class="pb-modal-content">
-          <span id="close-modal" class="close">&times;</span>
-          <h2>Personal Bests for <span id="exercise-name"></span></h2>
-          <div id="personal-bests">
-          </div>
-          <div>
-              <input type="number" id="new-personal-best" placeholder="Enter new personal best">
-              <button id="save-pb">Save Personal Best</button>
-          </div>
-      </div>
-  </div>
   <div id="videoModal" class="modal hidden">
     <div class="modal-content">
       <span id="closeVideoModal" class="close">&times;</span>
@@ -72,7 +60,9 @@
           </select>
           <input type="text" id="exerciseGoal" placeholder="Goal (e.g. Strength)" required />
           <input type="text" id="exerciseVideo" name="exerciseVideo" placeholder="https://...">
-          <input type="text" id="exercise-instructions" placeholder="Enter form instructions..."></input>
+          <div class="pb-tag-input">
+          <input type="text" id="exercisePBText" placeholder="e.g. 100kg, 8 reps" class="pb-text-field" />
+        </div>
           <button type="submit">Add</button>
 
         </form>
@@ -100,22 +90,14 @@
           </select>
           <input type="text" id="editExerciseGoal" placeholder="Goal (e.g. Strength)" required />
           <input type="text" id="editExerciseVideo" name="editExerciseVideo" placeholder="https://...">
-          <input type="text" id="editExerciseInstructions" placeholder="Enter form instructions..."></input>
+          <div class="pb-tag-input">
+              Personal Best
+            </label>
+            <input type="text" id="editExercisePBText" placeholder="e.g. 100kg, 8 reps" class="pb-text-field" />
+          </div>
+          
           <button type="submit">Save Changes</button>
         </form>
-      </div>
-    </div>
-    <div id="viewModal" class="modal hidden fullscreen-modal">
-      <div class="modal-content">
-        <span id="closeViewModal" class="close">&times;</span>
-        <h2>Exercise Instructions for <span id="exercise-name-view"></span></h2>
-        <p id="exercise-instructions-view"></p>
-        <h3>Personal Bests</h3>
-        <ul id="personal-bests-view">
-          <!-- Personal Bests will be listed here -->
-        </ul>
-        <input type="number" id="new-personal-best" placeholder="Enter new personal best">
-        <button id="add-personal-best">Add Personal Best</button>
       </div>
     </div>
     

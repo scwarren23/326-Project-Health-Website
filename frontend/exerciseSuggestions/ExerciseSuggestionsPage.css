@@ -203,7 +203,6 @@ form input, form select {
     position: fixed;
     padding: 5px;
     border-radius: 15px;
-    align-items: center;
     overflow: hidden;
     width: 40%;
     height: 40%;
@@ -231,7 +230,19 @@ form input, form select {
     font-size: 18px;
 }
 
-#viewModal {
+#addCardModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#editCardModal {
     position: fixed;
     top: 0;
     left: 0;
@@ -244,69 +255,43 @@ form input, form select {
 }
 
 /* Modal content box */
-#viewModal > div {
+#addCardModal > div {
     background-color: #fff;
     border-radius: 12px;
     padding: 24px;
     width: 90%;
+    left: 30%;
+    top: 10%;
     max-width: 500px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     position: relative;
 }
 
-/* Close button */
-#closeViewModal {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #999;
-    cursor: pointer;
-    transition: color 0.2s ease;
+#editCardModal > div {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    left: 30%;
+    top: 10%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    position: relative;
 }
 
-#viewModal.visible {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.personal-best {
+    background-color: white;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 2px solid lightblue;
+    font-weight: bold;
+    font-size: 14px;
+    display: inline-block;
+    margin: 5px 0;
 }
 
 
-#closeViewModal:hover {
-    color: #000;
-}
 
-/* View modal content styles */
-#exercise-name-view {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-#exercise-instructions {
-    font-size: 1rem;
-    margin-bottom: 1rem;
-}
-
-#personal-bests-view {
-    list-style-type: disc;
-    padding-left: 1.25rem;
-    margin-bottom: 1rem;
-}
-
-#add-pb-btn {
-    background-color: #3b82f6;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-#add-pb-btn:hover {
-    background-color: #2563eb;
-}
 
 
