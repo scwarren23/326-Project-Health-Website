@@ -41,19 +41,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    function addWorkout(workout) {
-        return new Promise((resolve, reject) => {
-            const dbRequest = indexedDB.open("workoutTrackerDB", 1);
-            dbRequest.onsuccess = (event) => {
-                const db = event.target.result;
-                const transaction = db.transaction("workouts", "readwrite");
-                const store = transaction.objectStore("workouts");
-                const request = store.add(workout);
-                request.onsuccess = () => resolve();
-                request.onerror = (err) => reject(err);
-            };
-            dbRequest.onerror = (event) => reject(event.target.error);
-        });
+    async function addWorkout(workout) {
+        // return new Promise((resolve, reject) => {
+        //     const dbRequest = indexedDB.open("workoutTrackerDB", 1);
+        //     dbRequest.onsuccess = (event) => {
+        //         const db = event.target.result;
+        //         const transaction = db.transaction("workouts", "readwrite");
+        //         const store = transaction.objectStore("workouts");
+        //         const request = store.add(workout);
+        //         request.onsuccess = () => resolve();
+        //         request.onerror = (err) => reject(err);
+        //     };
+        //     dbRequest.onerror = (event) => reject(event.target.error);
+        // });
+        try {
+            const response = await fetch('http://localhost:3000/api/workout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(exercise),
+            });
+            if (!response.ok) {
+                throw new Error('Error: ${response.status}');
+            }
+        } catch (error) {
+            console.error('Error adding workout:', error);
+        }
     }
     function getAllWorkouts() {
         return new Promise((resolve, reject) => {
