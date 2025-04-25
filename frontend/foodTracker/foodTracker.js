@@ -1,25 +1,31 @@
-const apiKey = ""; 
+let apiKey = ""; 
 let currFood = "";
-let db;
-
-
-const request = indexedDB.open("foodTrackerDB", 1);
-request.onerror = () => console.error("Database failed to open");
-request.onsuccess = () => {
-    db = request.result;
-    loadSavedFoods();
-};
-request.onupgradeneeded = (e) => {
-    let db = e.target.result;
-    db.createObjectStore("foods", { keyPath: "id", autoIncrement: true });
-};
-
+let foodId = 0;
+let userId = localStorage.getItem('userId');
+if (!userId) {
+  userId = Date.now();
+  localStorage.setItem('userId', userId);
+}
 
 let nutObj = { "serving": 1, "unit": "n", 1008: 0, 1003: 0, 1004: 0, 1005: 0, 2000: 0, 1079: 0, 1087: 0, 1089: 0, 1093: 0, 1104: 0, 1162: 0, 1253: 0 };
 let trackersValues = { 1008: 0, 1003: 0, 1004: 0, 1005: 0, 2000: 0, 1079: 0, 1087: 0, 1089: 0, 1093: 0, 1104: 0, 1162: 0, 1253: 0 };
 let defaultTrackerTotals = { 1008: 2500, 1003: 56, 1004: 80, 1005: 300, 2000: 36, 1079: 34, 1087: 1000, 1089: 8, 1093: 2300, 1104: 900, 1162: 90, 1253: 300 };
 let x = structuredClone(nutObj);
 
+async function fetchApiKey() {
+    try {
+        const response = await fetch("/api/getApiKey");
+        const data = await response.json();
+        apiKey = data.apiKey;
+        console.log("API Key fetched successfully:", apiKey);
+    } catch (err) {
+        console.error("Error fetching API key:", err);
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    loadSavedFoodsFromServer();
+    fetchApiKey()
+});
 async function searchFood() {
     nutObj = structuredClone(x);
     const foodQuery = document.getElementById("foodInput").value;
@@ -72,12 +78,8 @@ function displayResults(data) {
 
 function saveData(nutrientData) {
     let nutrients = nutrientData.foodNutrients;
-    if (nutrientData.servingSize) {
-        nutObj["serving"] = nutrientData.servingSize;
-        nutObj["unit"] = nutrientData.servingSizeUnit;
-    } else {
-        nutObj["serving"] = 1;
-    }
+    nutObj["serving"] = nutrientData.servingSize || 1;
+    nutObj["unit"] = nutrientData.servingSizeUnit || "n";
     nutrients.forEach(element => {
         if (Object.keys(nutObj).includes(String(element.nutrientId))) {
             nutObj[String(element.nutrientId)] = element.value;
@@ -86,6 +88,9 @@ function saveData(nutrientData) {
 }
 
 function amountFood() {
+    const thisFoodId = foodId; 
+    foodId += 1;
+    
     const foodQuery = String(document.getElementById("amountInput").value).toLowerCase();
     let amtEaten = foodQuery.includes("serving")
         ? parseFloat(foodQuery) * nutObj["serving"]
@@ -105,21 +110,29 @@ function amountFood() {
         : `${(amtEaten / foodNutObj["serving"]).toFixed(2)} servings / ${amtEaten}${foodNutObj["unit"]}: ${currFood}`;
 
     foodlistItem.foodNutObj = foodNutObj;
+    foodlistItem.dataset.foodId = thisFoodId;
 
-    foodlistItem.addEventListener('click', function () {
+    foodlistItem.addEventListener('click', async function () {
         for (let key in this.foodNutObj) {
             if (key !== "serving" && key !== "unit") {
                 trackersValues[key] -= this.foodNutObj[key];
             }
         }
 
-        const idToDelete = this.dataset.dbId;
-        const tx = db.transaction(["foods"], "readwrite");
-        const store = tx.objectStore("foods");
-        store.delete(Number(idToDelete));
+        try {
+            const response = await fetch(`/api/foods/food/${userId}/${this.dataset.foodId}`, {
+                method: 'DELETE',
+            });
 
-        this.remove();
-        updateProgress();
+            if (response.ok) {
+                this.remove();
+                updateProgress();
+            } else {
+                console.error('Failed to delete food:', response.text());
+            }
+        } catch (err) {
+            console.error('Error deleting food:', err);
+        }
     });
 
     document.getElementById("foodItems").appendChild(foodlistItem);
@@ -132,58 +145,20 @@ function amountFood() {
         }
     }
 
-    const tx = db.transaction(["foods"], "readwrite");
-    const store = tx.objectStore("foods");
-    const item = {
-        label: foodlistItem.textContent,
-        nutData: foodNutObj
-    };
-    const request = store.add(item);
-    request.onsuccess = () => foodlistItem.dataset.dbId = request.result;
+    fetch('/api/foods', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            userId,
+            label: foodlistItem.textContent,
+            nutData: foodNutObj
+        })
+    })
+    .then(res => res.json())
+    .then(data => console.log('Saved to backend:', data))
+    .catch(err => console.error('Backend save error:', err));
 
     updateProgress();
-}
-
-function loadSavedFoods() {
-    const tx = db.transaction("foods", "readonly");
-    const store = tx.objectStore("foods");
-    const request = store.openCursor();
-
-    request.onsuccess = (e) => {
-        const cursor = e.target.result;
-        if (cursor) {
-            const foodNutObj = cursor.value.nutData;
-            const foodlistItem = document.createElement('li');
-            foodlistItem.classList.add('food-list-item');
-            foodlistItem.textContent = cursor.value.label;
-            foodlistItem.dataset.dbId = cursor.key;
-            foodlistItem.foodNutObj = foodNutObj;
-
-            foodlistItem.addEventListener('click', function () {
-                for (let key in this.foodNutObj) {
-                    if (key !== "serving" && key !== "unit") {
-                        trackersValues[key] -= this.foodNutObj[key];
-                    }
-                }
-                const delTx = db.transaction(["foods"], "readwrite");
-                const delStore = delTx.objectStore("foods");
-                delStore.delete(Number(this.dataset.dbId));
-                this.remove();
-                updateProgress();
-            });
-
-            document.getElementById("foodItems").appendChild(foodlistItem);
-
-            for (let key in foodNutObj) {
-                if (key !== "serving" && key !== "unit") {
-                    trackersValues[key] += foodNutObj[key];
-                }
-            }
-
-            cursor.continue();
-        }
-        updateProgress();
-    };
 }
 
 function updateProgress() {
@@ -213,4 +188,79 @@ function updateProgress() {
     updateBar("vitA", "1104");
     updateBar("vitC", "1162");
     updateBar("cholesterol", "1253");
+}
+
+async function loadSavedFoodsFromServer() {
+    console.log("🔄 Loading saved foods for user:", userId);
+
+    try {
+        const response = await fetch(`/api/foods/${userId}`);
+        console.log("✅ Fetch call made");
+
+        if (!response.ok) {
+            console.error("❌ Fetch failed with status:", response.status);
+            return;
+        }
+
+        const text = await response.text();
+        console.log("📦 Raw response text:", text);
+
+        let data;
+        try {
+            data = JSON.parse(text);
+            console.log("✅ Parsed JSON data:", data);
+        } catch (err) {
+            console.error("❌ JSON parse error:", err);
+            return;
+        }
+
+        foodId = data.nextFoodId || 0;
+
+        data.foods.forEach(food => {
+            console.log("➕ Adding food item:", food);
+
+            const foodNutObj = food.nutData;
+            const listItem = document.createElement('li');
+            listItem.classList.add('food-list-item');
+            listItem.textContent = food.label;
+            listItem.foodNutObj = foodNutObj;
+            listItem.dataset.foodId = food.foodId;
+
+            for (let key in foodNutObj) {
+                if (key !== "serving" && key !== "unit") {
+                    trackersValues[key] += foodNutObj[key];
+                }
+            }
+
+            listItem.addEventListener('click', async function () {
+                for (let key in this.foodNutObj) {
+                    if (key !== "serving" && key !== "unit") {
+                        trackersValues[key] -= this.foodNutObj[key];
+                    }
+                }
+
+                try {
+                    const res = await fetch(`/api/foods/food/${userId}/${this.dataset.foodId}`, {
+                        method: 'DELETE',
+                    });
+
+                    if (res.ok) {
+                        this.remove();
+                        updateProgress();
+                    } else {
+                        console.error('❌ Failed to delete food:', await res.text());
+                    }
+                } catch (err) {
+                    console.error('❌ Error deleting food:', err);
+                }
+            });
+
+            document.getElementById("foodItems").appendChild(listItem);
+        });
+
+        console.log("✅ All food items added");
+        updateProgress();
+    } catch (err) {
+        console.error("❌ Error in loadSavedFoodsFromServer:", err);
+    }
 }
