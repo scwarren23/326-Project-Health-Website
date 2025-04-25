@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, "../frontend/mainPage")));
 app.use("/eventhub", express.static(path.resolve(__dirname, "../frontend/eventhub")));
 app.use("/service", express.static(path.resolve(__dirname, "../frontend/service")));
+app.use("/UIDesign", express.static(path.join(__dirname, "../frontend/UIDesign")));
 
 app.use("/api/mainPage", mainPageRoutes);
 
