@@ -1,16 +1,21 @@
 import express from "express";
+import cors from "cors";
+import path from "path";
 import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import nutritionRoutes from "./routes/nutritionRoutes.js";
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-
+const __dirname = dirname(__filename);
 
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.resolve(__dirname, "../frontend/nutritionalAdvice"))); // optional: if you have static frontend
+app.use("/api/nutrition", nutritionRoutes);
 
 app.use(express.json());
 
