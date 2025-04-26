@@ -1,6 +1,6 @@
 import express from "express";
 
-import { getAllWorkouts,getWorkoutById, addWorkout, deleteWorkout } from "../controllers/workoutTrackerController";
+import { getAllWorkouts,getWorkoutById, addWorkout, deleteWorkout } from "../controllers/workoutTrackerController.js";
 
 const router = express.Router();
 
