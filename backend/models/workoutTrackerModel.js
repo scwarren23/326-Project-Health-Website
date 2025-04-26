@@ -40,7 +40,7 @@ class _workoutTrackerModel {
 const workoutTrackerModel = new _workoutTrackerModel();
 
 workoutTrackerModel.create({ date: "2023-10-01", workoutType: "Run", duration: 30, distance: 5, rpe: 7, notes: "Note" });
-workoutTrackerModel.create({ workout: "Description 2", file: null, filename: null });
-workoutTrackerModel.create({ workout: "Description 3", file: null, filename: null });
+workoutTrackerModel.create({ date: "2023-10-02", workoutType: "Swim", duration: 45, distance: 2, rpe: 8, notes: "Note" });
+workoutTrackerModel.create({ date: "2023-10-03", workoutType: "Bike", duration: 60, distance: 20, rpe: 6, notes: "Note" });
 
 export default workoutTrackerModel;
