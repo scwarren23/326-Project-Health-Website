@@ -9,6 +9,7 @@ import nutritionRoutes from "./routes/nutritionRoutes.js";
 import exerciseRoutes from './routes/ExerciseSuggestionsRoutes.js';
 import { dirname } from "path";
 import mainPageRoutes from "./routes/mainPageRoutes.js";
+import workoutTrackerRoutes from "./routes/workoutTrackerRoutes.js";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use(express.static(path.resolve(__dirname, "../frontend/mainPage")));
 app.use("/eventhub", express.static(path.resolve(__dirname, "../frontend/eventhub")));
 app.use("/service", express.static(path.resolve(__dirname, "../frontend/service")));
 app.use("/UIDesign", express.static(path.join(__dirname, "../frontend/UIDesign")));
+app.use("/api/workoutTracker", workoutTrackerRoutes);
 
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
@@ -55,6 +57,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/foods', dataRoutes);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
