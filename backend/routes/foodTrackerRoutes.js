@@ -14,7 +14,7 @@ router.get('/:userId', getDataById);
 
 router.post('/', addData);
 
-router.delete('/food/:userId/:foodId', deleteData);
+router.delete('/:userId/:foodId', deleteData);
 
 
 

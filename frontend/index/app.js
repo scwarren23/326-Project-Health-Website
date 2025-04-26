@@ -42,7 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "main": "main-page",
         "food": "food-tracker",
         "work": "workouts",
-        "nutrition": "nutritional-advice"
+        "nutrition": "nutritional-advice",
+        "workTrack": "workout-tracker"
     };
 
     Object.entries(navMap).forEach(([buttonId, viewId]) => {

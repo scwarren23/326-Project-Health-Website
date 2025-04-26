@@ -88,8 +88,9 @@ function saveData(nutrientData) {
 }
 
 function amountFood() {
-    const thisFoodId = foodId; 
-    foodId += 1;
+    
+    const thisFoodId = foodId++;
+
     
     const foodQuery = String(document.getElementById("amountInput").value).toLowerCase();
     let amtEaten = foodQuery.includes("serving")
@@ -120,7 +121,7 @@ function amountFood() {
         }
 
         try {
-            const response = await fetch(`/api/foods/food/${userId}/${this.dataset.foodId}`, {
+            const response = await fetch(`/api/foods/${userId}/${this.dataset.foodId}`, {
                 method: 'DELETE',
             });
 
@@ -155,7 +156,10 @@ function amountFood() {
         })
     })
     .then(res => res.json())
-    .then(data => console.log('Saved to backend:', data))
+    .then(data => {
+        console.log('Saved to backend:', data);
+        foodlistItem.dataset.foodId = data.foodId; 
+    })
     .catch(err => console.error('Backend save error:', err));
 
     updateProgress();
@@ -191,33 +195,33 @@ function updateProgress() {
 }
 
 async function loadSavedFoodsFromServer() {
-    console.log("🔄 Loading saved foods for user:", userId);
+    console.log("Loading saved foods for user:", userId);
 
     try {
         const response = await fetch(`/api/foods/${userId}`);
-        console.log("✅ Fetch call made");
+        console.log("Fetch call made");
 
         if (!response.ok) {
-            console.error("❌ Fetch failed with status:", response.status);
+            console.error("Fetch failed with status:", response.status);
             return;
         }
 
         const text = await response.text();
-        console.log("📦 Raw response text:", text);
+        console.log("Raw response text:", text);
 
         let data;
         try {
             data = JSON.parse(text);
-            console.log("✅ Parsed JSON data:", data);
+            console.log("Parsed JSON data:", data);
         } catch (err) {
-            console.error("❌ JSON parse error:", err);
+            console.error("JSON parse error:", err);
             return;
         }
 
         foodId = data.nextFoodId || 0;
 
         data.foods.forEach(food => {
-            console.log("➕ Adding food item:", food);
+            console.log("Adding food item:", food);
 
             const foodNutObj = food.nutData;
             const listItem = document.createElement('li');
@@ -240,7 +244,7 @@ async function loadSavedFoodsFromServer() {
                 }
 
                 try {
-                    const res = await fetch(`/api/foods/food/${userId}/${this.dataset.foodId}`, {
+                    const res = await fetch(`/api/foods/${userId}/${this.dataset.foodId}`, {
                         method: 'DELETE',
                     });
 
@@ -248,17 +252,17 @@ async function loadSavedFoodsFromServer() {
                         this.remove();
                         updateProgress();
                     } else {
-                        console.error('❌ Failed to delete food:', await res.text());
+                        console.error('Failed to delete food:', await res.text());
                     }
                 } catch (err) {
-                    console.error('❌ Error deleting food:', err);
+                    console.error('Error deleting food:', err);
                 }
             });
 
             document.getElementById("foodItems").appendChild(listItem);
         });
 
-        console.log("✅ All food items added");
+        console.log("All food items added");
         updateProgress();
     } catch (err) {
         console.error("❌ Error in loadSavedFoodsFromServer:", err);
