@@ -1,0 +1,46 @@
+class _workoutTrackerModel {
+    static workoutid = 1;
+
+    constructor() {
+        this.workouts = [];
+    }
+
+    async create(workout) {
+        workout.id = _InMemoryTaskModel.workoutid++;
+        this.workouts.push(workout);
+        return workout;
+    }
+
+    async read(id = null) {
+        if (id) {
+            return this.workouts.find((workout) => workout.id === id);
+        }
+
+        return this.workouts;
+    }
+
+    async update(workout) {
+        const index = this.workouts.findIndex((t) => t.id === workout.id);
+        this.workouts[index] = workout;
+        return wokrout;
+    }
+
+    async delete(workout = null) {
+        if (workout === null) {
+            this.workouts = [];
+            return;
+        }
+
+        const index = this.workouts.findIndex((t) => t.id === workout.id);
+        this.workouts.splice(index, 1);
+        return workout;
+    }
+}
+
+const workoutTrackerModel = new _workoutTrackerModel();
+
+workoutTrackerModel.create({ date: "2023-10-01", workoutType: "Run", duration: 30, distance: 5, rpe: 7, notes: "Note" });
+workoutTrackerModel.create({ workout: "Description 2", file: null, filename: null });
+workoutTrackerModel.create({ workout: "Description 3", file: null, filename: null });
+
+export default workoutTrackerModel;
