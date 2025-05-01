@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import dataRoutes from "./routes/foodTrackerRoutes.js";
 import nutritionRoutes from "./routes/nutritionRoutes.js";
 import exerciseRoutes from './routes/ExerciseSuggestionsRoutes.js';
+import sequelize from "./database.js";
 
 dotenv.config();
 
@@ -49,6 +50,13 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/foods', dataRoutes);
+
+sequelize.sync().then(() => {
+  console.log('SQLite database synced successfully.');
+}).catch((err) => {
+  console.error('Database sync failed:', err);
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
