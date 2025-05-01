@@ -3,17 +3,21 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="UIWorkoutTracker.css">
+        <link rel="stylesheet" href="/workoutTracker/UIWorkoutTracker.css">
         <title>Workout Tracker</title>
     </head>
-    <header>
+    <!--<header>
         <h1>Track Your Workouts</h1>
-    </header>
+    </header>-->
     <body>    
         <!--<div class="header">
             <h1>Track Your Workouts</h1>
         </div>-->
     <div class="main-page">
+        <div class="header">
+            <h1>Track Your Workouts</h1>
+        </div>
+        <div class="form">
         <form id="input">
             <div id="activity-dropdown">
                 <label for="activity">Activity Type?</label>
@@ -44,7 +48,9 @@
             <div id="submit-button">
                 <button id="submit" type="submit">Add Workout</button>
             </div>
+           
         </form>
+        </div>
         <div class="workout-list">
             <h2>Workout History</h2>
             <ul id="workout-history">
@@ -87,8 +93,11 @@
                 <p id="total-distance"><strong>Total Distance: </strong>0 miles</p>
                 <p id="average-rpe"><strong>Average RPE: </strong>0</p>
             </div>
+            <div id="reset-button">
+                <button id="reset" type="reset">Reset Workout Log</button>
+            </div>
         </div>
     </div>
-    <script src="app.js"></script>
+    <script src="/workoutTracker/app.js"></script>
     </body>
 </html>

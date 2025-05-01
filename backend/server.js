@@ -8,6 +8,9 @@ import dataRoutes from "./routes/foodTrackerRoutes.js";
 import nutritionRoutes from "./routes/nutritionRoutes.js";
 import exerciseRoutes from './routes/ExerciseSuggestionsRoutes.js';
 import sequelize from "./database.js";
+import { dirname } from "path";
+import mainPageRoutes from "./routes/mainPageRoutes.js";
+import workoutTrackerRoutes from "./routes/workoutTrackerRoutes.js";
 
 dotenv.config();
 
@@ -15,7 +18,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
 app.get('/api/getApiKey', (req, res) => {
@@ -27,11 +29,17 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.resolve(__dirname, "../frontend")));
 app.use("/api/nutrition", nutritionRoutes);
+app.use(express.static(path.resolve(__dirname, "../frontend/mainPage")));
+app.use("/eventhub", express.static(path.resolve(__dirname, "../frontend/eventhub")));
+app.use("/service", express.static(path.resolve(__dirname, "../frontend/service")));
+app.use("/UIDesign", express.static(path.join(__dirname, "../frontend/UIDesign")));
+app.use("/api/workoutTracker", workoutTrackerRoutes);
 
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.use('/api/exercises', exerciseRoutes);
+app.use("/api/mainPage", mainPageRoutes);
 
 app.post('/api/exercises', async (req, res) => {
   try {

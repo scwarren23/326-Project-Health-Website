@@ -41,33 +41,110 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    function addWorkout(workout) {
-        return new Promise((resolve, reject) => {
-            const dbRequest = indexedDB.open("workoutTrackerDB", 1);
-            dbRequest.onsuccess = (event) => {
-                const db = event.target.result;
-                const transaction = db.transaction("workouts", "readwrite");
-                const store = transaction.objectStore("workouts");
-                const request = store.add(workout);
-                request.onsuccess = () => resolve();
-                request.onerror = (err) => reject(err);
-            };
-            dbRequest.onerror = (event) => reject(event.target.error);
-        });
+    async function addWorkout(workout) {
+        // return new Promise((resolve, reject) => {
+        //     const dbRequest = indexedDB.open("workoutTrackerDB", 1);
+        //     dbRequest.onsuccess = (event) => {
+        //         const db = event.target.result;
+        //         const transaction = db.transaction("workouts", "readwrite");
+        //         const store = transaction.objectStore("workouts");
+        //         const request = store.add(workout);
+        //         request.onsuccess = () => resolve();
+        //         request.onerror = (err) => reject(err);
+        //     };
+        //     dbRequest.onerror = (event) => reject(event.target.error);
+        // });
+        try {
+            const response = await fetch('http://localhost:3000/api/workout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(exercise),
+            });
+            if (!response.ok) {
+                throw new Error('Error: ${response.status}');
+            }
+        } catch (error) {
+            console.error('Error adding workout:', error);
+        }
     }
-    function getAllWorkouts() {
-        return new Promise((resolve, reject) => {
-            const dbRequest = indexedDB.open("workoutTrackerDB", 1);
-            dbRequest.onsuccess = (event) => {
-                const db = event.target.result;
-                const transaction = db.transaction("workouts", "readonly");
-                const store = transaction.objectStore("workouts");
-                const request = store.getAll();
-                request.onsuccess = (event) => resolve(event.target.result);
-                request.onerror = (err) => reject(err);
-            };
-            dbRequest.onerror = (event) => reject(event.target.error);
-        });
+    async function getAllWorkouts(workout) {
+        try {
+            const response = await fetch('http://localhost:3000/api/workout', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Error: ${response.status}');
+            }
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('Error fetching workouts:', error);
+        }
+        // return new Promise((resolve, reject) => {
+        //     const dbRequest = indexedDB.open("workoutTrackerDB", 1);
+        //     dbRequest.onsuccess = (event) => {
+        //         const db = event.target.result;
+        //         const transaction = db.transaction("workouts", "readonly");
+        //         const store = transaction.objectStore("workouts");
+        //         const request = store.getAll();
+        //         request.onsuccess = (event) => resolve(event.target.result);
+        //         request.onerror = (err) => reject(err);
+        //     };
+        //     dbRequest.onerror = (event) => reject(event.target.error);
+        // });
+    }
+    async function getWorkoutById(id) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/workout/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Error: ${response.status}');
+            }
+            const data = await response.json();
+            return data;
+        }
+        catch (error) {
+            console.error('Error fetching workout:', error);
+        }
+    }
+    async function deleteWorkout(id) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/workout/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Error: ${response.status}');
+            }
+        }
+        catch (error) {
+            console.error('Error deleting workout:', error);
+        }
+
+        // return new Promise((resolve, reject) => {
+        //     const dbRequest = indexedDB.open("workoutTrackerDB", 1);
+        //     dbRequest.onsuccess = (event) => {    
+        //         const db = event.target.result;
+        //         const transaction = db.transaction("workouts", "readwrite");
+        //         const store = transaction.objectStore("workouts");
+        //         const request = store.delete(id);
+        //         request.onsuccess = () => resolve();
+        //         request.onerror = (err) => reject(err);
+        //     };
+        //     dbRequest.onerror = (event) => reject(event.target.error);
+        // });
     }
     function loadWorkoutsFromDB() {
         getAllWorkouts().then(fetchedWorkouts => {
@@ -190,5 +267,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         form.reset();
     });
+    // form.addEventListener("reset", function (event) {
+    //     event.preventDefault();
+    //     activityInput.value = "";
+    //     durationInput.value = "";
+    //     distanceInput.value = "";
+    //     rpeInput.value = "";
+    //     notesInput.value = "";
+    //     workoutHistory.innerHTML = "";
+    //     totalDurationElem.textContent = "Total Duration: 0 min";
+    //     totalDistanceElem.textContent = "Total Distance: 0 miles";
+    //     averageRpeElem.textContent = "Average RPE: 0";
+    //     workouts.length = 0; 
+    //     console.log("Form reset");
+    //     loadWorkoutsFromDB();   
+    // })
     
 });
