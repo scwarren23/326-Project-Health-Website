@@ -38,3 +38,5 @@ Milestone 4 Slides: https://docs.google.com/presentation/d/1gCKduxF-XtHZhiRvhfZn
 Milestone 5 Slides: https://docs.google.com/presentation/d/1TyoXCQ8AGaWW1ol2KnuGPWmc-vETQgGONoxyp-ps22w/edit?usp=sharing
 
 Milestone 6 Slides:https://docs.google.com/presentation/d/1etaNMS-V-PhPNZqLHyfb4VU1G8u0vZb44uhOmT1cz38/edit?usp=sharing
+
+Milestone 7 Slides:https://docs.google.com/presentation/d/1doVm3mGClzICqLnQbxxRA_4ONz_mvVSFVcjjMlewARo/edit?usp=sharing
