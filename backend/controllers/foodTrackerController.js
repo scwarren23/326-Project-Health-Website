@@ -1,115 +1,74 @@
-import { readFile, writeFile } from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import FoodEntry from '../models/food.js' 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const dataPath = path.join(__dirname, '../data/foodTrackerData.json');
-
-// Helper: read JSON file
-const readData = async () => {
-    try {
-      const data = await readFile(dataPath, 'utf-8');
-      return JSON.parse(data || '[]');
-    } catch (err) {
-      console.error('Error reading data.json:', err);
-      return [];
-    }
-  };
-  
-  const writeData = async (data) => {
-    try {
-      await writeFile(dataPath, JSON.stringify(data, null, 2));
-    } catch (err) {
-      console.error('Error writing data.json:', err);
-    }
-  };
-// GET all data
+// GET all food entries
 export const getAllData = async (req, res) => {
-  const data = await readData();
-  res.json(data);
+  try {
+    const foods = await FoodEntry.findAll();
+    res.json(foods);
+  } catch (error) {
+    console.error("Error fetching all data:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
-// GET by ID
+// GET all foods for a specific user
 export const getDataById = async (req, res) => {
-    const { userId } = req.params;
-  
-    try {
-      const data = await readData();
-      const userData = data.find(entry => entry.id == userId);
-  
-      if (!userData) {
-        return res.status(200).json({ nextFoodId: 0, foods: [] });
-      }
-  
-      res.status(200).json({
-        nextFoodId: userData.nextFoodId || 0,
-        foods: userData.foods || [],
-      });
-    } catch (err) {
-      console.error("Error fetching user data:", err);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  };
+  const { userId } = req.params;
+  try {
+    const foods = await FoodEntry.findAll({
+      where: { userId }
+    });
 
-// POST new entry
+    
+    const maxId = foods.reduce((max, food) => Math.max(max, food.foodId), 0);
+    res.status(200).json({
+      nextFoodId: maxId + 1,
+      foods
+    });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// POST:
 export const addData = async (req, res) => {
-    try {
-      const data = await readData();
-      const { userId, label, nutData } = req.body;
-  
-      let userEntry = data.find(d => d.id == userId);
-  
-      if (!userEntry) {
-        // New user
-        userEntry = {
-          id: userId,
-          nextFoodId: 1,
-          foods: []
-        };
-        data.push(userEntry);
-      }
-  
-      const newFood = {
-        foodId: userEntry.nextFoodId++,
-        label,
-        nutData
-      };
-  
-      userEntry.foods.push(newFood);
-      await writeData(data);
-  
-      res.status(201).json({ message: "Food added", foodId: newFood.foodId });
-    } catch (error) {
-      console.error("Error in addData:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  };
-  
-  
+  try {
+    const { userId, label, nutData } = req.body;
 
+   
+    const existingFoods = await FoodEntry.findAll({ where: { userId } });
+    const nextFoodId = existingFoods.reduce((max, food) => Math.max(max, food.foodId), 0) + 1;
 
+    const newFood = await FoodEntry.create({
+      userId,
+      foodId: nextFoodId,
+      label,
+      nutData
+    });
 
-// DELETE entry by ID
+    res.status(201).json({ message: "Food added", foodId: newFood.foodId });
+  } catch (error) {
+    console.error("Error adding food:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// DELETE:
 export const deleteData = async (req, res) => {
-    const { userId, foodId } = req.params;
-    const data = await readData();
-  
-    const userEntry = data.find(entry => entry.id == userId);
-    if (!userEntry) {
-      return res.status(404).json({ message: "User not found" });
-    }
-  
-    const originalLength = userEntry.foods.length;
-    userEntry.foods = userEntry.foods.filter(f => f.foodId != foodId);
-  
-    if (userEntry.foods.length === originalLength) {
+  const { userId, foodId } = req.params;
+  try {
+    const deleted = await FoodEntry.destroy({
+      where: { userId, foodId }
+    });
+
+    if (deleted === 0) {
       return res.status(404).json({ message: "Food not found" });
     }
-  
-    await writeData(data);
+
     res.json({ message: "Food deleted successfully" });
-  };
-
-
-  
+  } catch (error) {
+    console.error("Error deleting food:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
