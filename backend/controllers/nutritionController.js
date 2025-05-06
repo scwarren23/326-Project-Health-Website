@@ -1,45 +1,44 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import SQLiteNutritionModel from "../models/nutritionModel.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const NUTRITION_PATH = path.join(__dirname, "../data/nutrition.json");
-
-function getNutritionData(req, res) {
-    if (!fs.existsSync(NUTRITION_PATH)) {
-        return res.status(404).json({message: "No nutrition data found"});
+async function getNutritionData(req, res) {
+    try {
+        const records = await SQLiteNutritionModel.read();
+        if (records.length === 0) {
+            return res.status(404).json({ message: "No nutrition data found" });
+        }
+        res.json(records[records.length - 1]);
+    } catch (err) {
+        console.error("Error fetching nutrition data:", err);
+        res.status(500).json({ message: "Internal server error" });
     }
-    const data = fs.readFileSync(NUTRITION_PATH, "utf8");
-    res.json(JSON.parse(data));
 }
 
-function saveNutritionData(req, res) {
-    console.log("Received nutrition POST request:", req.body);
+async function saveNutritionData(req, res) {
+    try {
+        const nutrition = req.body;
+        const requiredFields = ["age", "weight", "height", "gender", "activityLevel", "goalWeight"];
+        const missing = requiredFields.filter(field => !(field in nutrition));
 
-    const nutrition = req.body;
-    const requiredFields = ["age", "weight", "height", "gender", "activityLevel", "goalWeight"];
-    const missing = requiredFields.filter(field => !(field in nutrition));
+        if (missing.length > 0) {
+            return res.status(400).json({ message: `Missing fields: ${missing.join(", ")}`});
+        }
 
-    if (missing.length > 0) {
-        console.log("Missing fields:", missing);
-        return res.status(400).json({message: `Missing fields: ${missing.join(", ")}`});
+        await SQLiteNutritionModel.create(nutrition);
+        res.json({ message: "Nutrition data saved" });
+    } catch (err) {
+        console.error("Error saving nutrition data:", err);
+        res.status(500).json({ message: "Internal server error" });
     }
-
-    fs.writeFileSync(NUTRITION_PATH, JSON.stringify(nutrition, null, 2), "utf8");
-    console.log("Nutrition data saved.");
-    res.json({message: "Nutrition data saved"});
 }
 
-function deleteNutritionData(req, res) {
-    if (fs.existsSync(NUTRITION_PATH)) {
-        fs.unlinkSync(NUTRITION_PATH);
-        res.json({ message: "Nutrition data deleted" });
-    } else {
-        res.status(404).json({ message: "No nutrition data to delete" });
-    }
+async function deleteNutritionData(req, res) {
+    try {
+        await SQLiteNutritionModel.delete();
+        res.json({ message: "All nutrition data deleted" });
+      } catch (err) {
+        console.error("Error deleting nutrition data:", err);
+        res.status(500).json({ message: "Internal server error" });
+      }
 }
 
 export { getNutritionData, saveNutritionData, deleteNutritionData };
