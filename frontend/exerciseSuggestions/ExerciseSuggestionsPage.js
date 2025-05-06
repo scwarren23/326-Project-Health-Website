@@ -1,3 +1,24 @@
+const TARGET_GROUPS = {
+    hamstrings: 'legs',
+    quadriceps: 'legs',
+    glutes: 'legs',
+    adductors: 'legs',
+    abductors: 'legs',
+    calves: 'legs',
+    biceps: 'arms',
+    triceps: 'arms',
+    forearms: 'arms',
+    chest: 'chest',
+    shoulders: 'shoulders',
+    traps: 'arms',
+    abdominals: 'core',
+    obliques: 'core',
+    lower_back: 'core',
+    back: 'back',
+    lats: 'back'
+};
+
+
 function convertToEmbedURL(url) {
     const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/);
     if (youtubeMatch) {
@@ -8,6 +29,7 @@ function convertToEmbedURL(url) {
 
 document.addEventListener("DOMContentLoaded", function () {
     loadExercisesFromDB();
+    
     const searchInput = document.getElementById("searchInput");
     const filterSelect = document.getElementById("filterSelect");
     const addBtn = document.getElementById("addCardBtn");
@@ -64,20 +86,21 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const res = await fetch('http://localhost:3000/api/exercises');
             const exercises = await res.json();
+            exerciseGrid.innerHTML = "";
             exercises.forEach(addExerciseCardToDOM);
         } catch (err) {
             console.error("Error loading exercises:", err);
         }
     }
-    
 
     async function addExerciseCardToDOM(exercise) {
         const card = document.createElement("div");
         card.className = "exercise-card";
+        const groupedCategory = TARGET_GROUPS[exercise.category.toLowerCase()] || exercise.category;
         card.setAttribute("data-id", exercise.id);
-        card.setAttribute("data-category", exercise.category);
+        card.setAttribute("data-category", groupedCategory);
         card.setAttribute("data-video", exercise.videoURL);
-    
+        
         const categoryTag = exercise.category || "Unknown";
         const difficultyTag = exercise.difficulty || "Unknown";
         const goalTag = (exercise.tags && exercise.tags[2]) ? exercise.tags[2] : "Goal";
@@ -88,14 +111,15 @@ document.addEventListener("DOMContentLoaded", function () {
             <button class="delete-btn">&times</button>
             <div class="tags">
                 <span class="tag target">${categoryTag.charAt(0).toUpperCase() + categoryTag.slice(1)}</span>
-                <span class="tag ${difficultyTag}">${difficultyTag.charAt(0).toUpperCase() + difficultyTag.slice(1)}</span>
-                <span class="tag goal">${goalTag}</span>
+                <span class="tag ${difficultyTag.toLowerCase()}">${difficultyTag.charAt(0).toUpperCase() + difficultyTag.slice(1)}</span>
+                <span class="tag goal">${goalTag.charAt(0).toUpperCase() + goalTag.slice(1)}</span>
                 ${pbTag && pbTag !== "Personal Best: " ? `<span class="tag personal-best">${pbTag}</span>` : ""}
             </div>
             <button class="watch-video-btn">Form Video</button>
             <button class="edit-btn">Edit</button>
         `;
         exerciseGrid.appendChild(card);
+        filterExercises();
     }
     
 
@@ -162,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.target.classList.contains('delete-btn')) {
             const card = e.target.closest('.exercise-card');
             const id = Number(card.getAttribute("data-id"));
-            card.remove();
+            card.remove()
             deleteExerciseFromDB(id);
         }
     });
@@ -273,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeEditModal = document.getElementById("closeEditModal");
 
     closeEditModal.addEventListener("click", () => {
-        editCardModal.classList.add("hidden");
+        document.getElementById("editCardModal").classList.add("hidden");
     });
 
     
@@ -281,5 +305,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
    
-    
+     
 });
