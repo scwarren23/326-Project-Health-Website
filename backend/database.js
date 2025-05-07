@@ -2,6 +2,8 @@ import { Sequelize } from 'sequelize';
 import Exercise from './models/Exercise.js';
 import SQLiteNutritionModel, { initNutritionModel } from './models/nutritionModel.js';
 import FoodEntry from './models/food.js';
+import SQLiteNutritionModel, { initProfileModel } from './models/nutritionModel.js';
+import SQLiteProfileModel from './models/Profile.js';
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -17,6 +19,9 @@ initNutritionModel(sequelize);
 await SQLiteNutritionModel.init(false, sequelize);
 
 FoodEntry.initModel(sequelize);
+
+initProfileModel(sequelize);
+await SQLiteProfileModel.init(false, sequelize);
 
 await sequelize.sync();
 
