@@ -16,7 +16,7 @@ async function getNutritionData(req, res) {
 async function saveNutritionData(req, res) {
     try {
         const nutrition = req.body;
-        const requiredFields = ["age", "weight", "height", "gender", "activityLevel", "goalWeight"];
+        const requiredFields = ["age", "weight", "height", "gender", "activityLevel", "goalWeight", "weightChangeRate"];
         const missing = requiredFields.filter(field => !(field in nutrition));
 
         if (missing.length > 0) {
