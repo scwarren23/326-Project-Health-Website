@@ -1,35 +1,41 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import SQLiteProfileModel from "../models/Profile.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const DATA_PATH = path.join(__dirname, "../data/profile.json")
-
-function getProfile(req, res) {
-    if (!fs.existsSync(DATA_PATH)) {
-        return res.status(404).json({ message: "No profile found"});
+async function getProfile(req, res) {
+  try {
+    const profile = await SQLiteProfileModel.read();
+    if (!profile) {
+      return res.status(404).json({ message: "No profile found" });
     }
-    const data = fs.readFileSync(DATA_PATH, "utf8");
-    res.json(JSON.parse(data));
+    res.json(profile);
+  } catch (err) {
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
-function saveProfile(req, res) {
-    const profile = req.body;
-    if (!profile.name || !profile.email) {
-        return res.status(400).json({ message: "Missing required fields" });
-    }
-    fs.writeFileSync(DATA_PATH, JSON.stringify(profile, null, 2), "utf8");
+async function saveProfile(req, res) {
+  const { name, email } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    await SQLiteProfileModel.createOrUpdate({ name, email });
     res.json({ message: "Profile saved" });
+  } catch (err) {
+    console.error("Error saving profile:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
-function deleteProfile(req, res) {
-    if (fs.existsSync(DATA_PATH)) {
-        fs.unlinkSync(DATA_PATH);
-    }
+async function deleteProfile(req, res) {
+  try {
+    await SQLiteProfileModel.delete();
     res.json({ message: "Profile deleted" });
+  } catch (err) {
+    console.error("Error deleting profile:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
 export { getProfile, saveProfile, deleteProfile };

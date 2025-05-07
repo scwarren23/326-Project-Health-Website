@@ -13,8 +13,9 @@ export async function addExercise(exercise) {
   const newExercise = await Exercise.create({
     id: uuidv4(),
     name: exercise.name,
-    duration: exercise.duration,
-    caloriesBurned: exercise.caloriesBurned,
+    category: exercise.category,
+    difficulty: exercise.difficulty,
+    tags: exercise.tags
   });
   return newExercise;
 }

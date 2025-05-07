@@ -1,4 +1,24 @@
 document.addEventListener("DOMContentLoaded", async function () {
+    const form = document.getElementById("nutritional-form");
+    const goalWeightInput = document.getElementById("goal-weight-inpt");
+    const curWeightInput = document.getElementById("weight-inpt");
+    const activityLevelInput = document.getElementById("activity");
+    const genderInput = document.getElementById("gender-inpt");
+    const ageInput = document.getElementById("age-inpt");
+    const heightInput = document.getElementById("height-inpt");
+    const recommendationsDashboard = document.getElementById("reccomendations-dashboard");
+    const weightChangeRateInput = document.getElementById("weight-change-rate");
+
+    const errors = {
+        age: document.getElementById("age-error"),
+        height: document.getElementById("height-error"),
+        weight: document.getElementById("weight-error"),
+        goal: document.getElementById("goal-error"),
+        gender: document.getElementById("gender-error"),
+        activity: document.getElementById("activity-error"),
+        rate: document.getElementById("rate-error")
+    };
+
     try {
         const res = await fetch("/api/nutrition");
         if (res.ok) {
@@ -9,47 +29,16 @@ document.addEventListener("DOMContentLoaded", async function () {
             heightInput.value = saved.height;
             genderInput.value = saved.gender;
             activityLevelInput.value = saved.activityLevel;
+            weightChangeRateInput.value = saved.weightChangeRate;
         }
     } catch (err) {
         console.warn("No saved nutrition data from backend:", err.message);
     }
-    
-    const form = document.getElementById("nutritional-form");
-    const goalWeightInput = document.getElementById("goal-weight-inpt");
-    const curWeightInput = document.getElementById("weight-inpt");
-    const activityLevelInput = document.getElementById("activity");
-    const genderInput = document.getElementById("gender-inpt");
-    const ageInput = document.getElementById("age-inpt");
-    const heightInput = document.getElementById("height-inpt");
-    const recommendationsDashboard = document.getElementById("reccomendations-dashboard");
-
-    const errors = {
-        age: document.getElementById("age-error"),
-        height: document.getElementById("height-error"),
-        weight: document.getElementById("weight-error"),
-        goal: document.getElementById("goal-error"),
-        gender: document.getElementById("gender-error"),
-        activity: document.getElementById("activity-error")
-    };
-    
-    const savedInputs = JSON.parse(localStorage.getItem("userInputs"));
-    if (savedInputs) {
-        goalWeightInput.value = savedInputs.goalWeight;
-        curWeightInput.value = savedInputs.weight;
-        ageInput.value = savedInputs.age;
-        heightInput.value = savedInputs.height;
-        genderInput.value = savedInputs.gender;
-        activityLevelInput.value = savedInputs.activityLevel;
-    };
 
     let macrosChart;
     function renderChart(proteinGrams, fatGrams, carbGrams) {
         const ctx = document.getElementById('macrosChart').getContext('2d');
-
-        if (macrosChart) {
-            macrosChart.destroy();
-        }
-
+        if (macrosChart) macrosChart.destroy();
         macrosChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -63,13 +52,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             options: {
                 responsive: true,
                 plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Macronutrient Breakdown'
-                    }
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: 'Macronutrient Breakdown' }
                 }
             }
         });
@@ -79,11 +63,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     toggleViewBtn.addEventListener("click", () => {
         const chartContainer = document.getElementById("chart-container");
         const recDashboard = document.getElementById("reccomendations-dashboard");
-
         const isChartVisible = chartContainer.style.display === "block";
         chartContainer.style.display = isChartVisible ? "none" : "block";
         recDashboard.style.display = isChartVisible ? "block" : "none";
-
         toggleViewBtn.textContent = isChartVisible
             ? "Switch to Graph View"
             : "Switch to Text View";
@@ -100,34 +82,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         const weight = curWeightInput.value;
         const gender = genderInput.value;
         const activityLevel = activityLevelInput.value;
+        const weightChangeRate = parseFloat(weightChangeRateInput.value);
 
         let hasError = false;
-
-        if (!age || age <= 0) {
-            errors.age.textContent = "Please enter a valid age.";
-            hasError = true;
-        }
-        if (!height || height <= 0) {
-            errors.height.textContent = "Please enter a valid height (in inches).";
-            hasError = true;
-        }
-        if (!weight || weight <= 0) {
-            errors.weight.textContent = "Please enter a valid weight.";
-            hasError = true;
-        }
-        if (!goalWeight || goalWeight <= 0) {
-            errors.goal.textContent = "Please enter a valid goal weight.";
-            hasError = true;
-        }
-        if (!gender) {
-            errors.gender.textContent = "Please select your gender.";
-            hasError = true;
-        }
-
-        if (!activityLevel) {
-            errors.activity.textContent = "Please select your activity level.";
-            hasError = true;
-        }
+        if (!age || age <= 0) { errors.age.textContent = "Please enter a valid age."; hasError = true; }
+        if (!height || height <= 0) { errors.height.textContent = "Please enter a valid height."; hasError = true; }
+        if (!weight || weight <= 0) { errors.weight.textContent = "Please enter a valid weight."; hasError = true; }
+        if (!goalWeight || goalWeight <= 0) { errors.goal.textContent = "Please enter a valid goal weight."; hasError = true; }
+        if (!gender) { errors.gender.textContent = "Please select your gender."; hasError = true; }
+        if (!activityLevel) { errors.activity.textContent = "Please select your activity level."; hasError = true; }
+        if (!weightChangeRate) {errors.rate.textContent = "Please select a desired weekly weight change."; hasError = true }
 
         if (hasError) {
             recommendationsDashboard.innerHTML = `<p>Please fix the errors above to see recommendations.</p>`;
@@ -140,9 +104,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             age,
             height,
             gender,
-            activityLevel
+            activityLevel,
+            weightChangeRate
         };
-        localStorage.setItem("userInputs", JSON.stringify(userInputs));
 
         try {
             await fetch("/api/nutrition", {
@@ -153,11 +117,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         } catch (err) {
             console.error("Error saving to backend:", err);
         }
-        
-        if (!goalWeight || !age || !height || !weight) {
-            recommendationsDashboard.innerHTML = `<p>Fill in all fields to get recommendations.</p>`;
-            return;
-        }
 
         let BMR;
         if (gender === "male") {
@@ -165,26 +124,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         } else {
             BMR = 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age);
         }
+        BMR *= 0.9;
 
-        let activityMultiplier;
-        if (activityLevel === "low") {
-            activityMultiplier = 1.2;
-        } else if (activityLevel === "medium") {
-            activityMultiplier = 1.55;
-        } else {
-            activityMultiplier = 1.9;
-        }
+        let activityMultiplier = 1.1;
+        if (activityLevel === "medium") activityMultiplier = 1.3;
+        else if (activityLevel === "high") activityMultiplier = 1.5;
 
         let goalTDEE = BMR * activityMultiplier;
 
-        let totalCalories;
-        if (goalWeight < weight) {
-            totalCalories = Math.round(goalTDEE - 500);
-        } else if (goalWeight > weight) {
-            totalCalories = Math.round(goalTDEE + 300);
-        } else {
-            totalCalories = Math.round(goalTDEE);
-        }
+        const calorieAdjustment = weightChangeRate * 3000 / 7; // daily adjustment
+        const totalCalories = Math.round(goalTDEE - calorieAdjustment);
 
         let proteinGrams = Math.round(goalWeight * 1.2);
         let fatGrams = Math.round(totalCalories * 0.25 / 9);
@@ -202,11 +151,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     const resetBtn = document.getElementById("reset-btn");
-
     resetBtn.addEventListener("click", async function () {
         form.reset();
-
-        localStorage.removeItem("userInputs");
 
         Object.values(errors).forEach(el => el.textContent = "");
 

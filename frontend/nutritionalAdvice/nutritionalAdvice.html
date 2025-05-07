@@ -47,9 +47,20 @@
                 <label for="goal-weight-inpt">Goal Weight:</label>
                 <input type="number" min="1" id="goal-weight-inpt">
                 <span class="error" id="goal-error"></span>
-    
+
+                <label for="weight-change-rate">Desired Weekly Weight Change:</label>
+                <select id="weight-change-rate">
+                    <option value="" disabled selected>Select</option>
+                    <option value="0.5">Lose 0.5 lb/week</option>
+                    <option value="1">Lose 1 lb/week</option>
+                    <option value="-0.5">Gain 0.5 lb/week</option>
+                    <option value="-1">Gain 1 lb/week</option>
+                </select>
+                <span class="error" id="rate-error"></span>
+
                 <button type="submit">Get Recommendations</button>
                 <button type="button" id="reset-btn">Reset Fields</button>
+                
             </form>
             
             <div id="reccomendations-dashboard">
@@ -61,6 +72,7 @@
             </div>
 
             <button type ="button" id="toggle-view">Switch to Graph View</button>
+
 
             <div id="chart-container" style="display: none;">
                 <canvas id="macrosChart" width="400" height="400"></canvas>
