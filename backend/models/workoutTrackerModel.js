@@ -4,6 +4,11 @@ class workoutTrackerDB extends Model {
     static init(sequelize) {
         super.init(
             {
+                id: {
+                    type: DataTypes.INTEGER,
+                    autoIncrement: true,
+                    primaryKey: true,
+                },
                 date: {
                     type: DataTypes.DATE,
                     allowNull: false,
