@@ -1,3 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(205, 224, 231);
+    color: #333;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+input, select, button {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333;
+}
+
+button {
+    background-color: rgb(255, 82, 82);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: rgb(220, 50, 50);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgb(205, 224, 231);
+    margin: 0;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+input, select, button {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: rgb(255, 82, 82);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: rgb(220, 50, 50);
+}
+
 .header {
     background-color: rgb(205, 224, 231);
     grid-column: 1 / 3;
