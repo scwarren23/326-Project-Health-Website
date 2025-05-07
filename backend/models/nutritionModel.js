@@ -14,7 +14,8 @@ function initNutritionModel(sequelize) {
     height: DataTypes.FLOAT,
     gender: DataTypes.STRING,
     activityLevel: DataTypes.STRING,
-    goalWeight: DataTypes.FLOAT
+    goalWeight: DataTypes.FLOAT,
+    weightChangeRate: DataTypes.FLOAT
   }, {
     timestamps: true
   });
